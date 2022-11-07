@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ORAO Network Developers <hello@orao.network>",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "fuels": "=0.17.0",
     "tsup": "^6.4.0"
