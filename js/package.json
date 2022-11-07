@@ -1,0 +1,22 @@
+{
+  "name": "orao-fuel-vrf",
+  "version": "0.1.0",
+  "description": "VRF SDK for the Fuel Network",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ORAO Network Developers <hello@orao.network>",
+  "license": "ISC",
+  "dependencies": {
+    "fuels": "=0.17.0",
+    "tsup": "^6.4.0"
+  },
+  "devDependencies": {
+    "fuelchain": "=0.17.0",
+    "typechain-target-fuels": "=0.17.0",
+    "typescript": "^4.8.4"
+  }
+}
