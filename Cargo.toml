@@ -1,0 +1,14 @@
+[workspace]
+members = ["rust/sdk", "rust/examples/off-chain"]
+
+[workspace.package]
+version = "0.1.0"
+authors = ["ORAO Network Developers <hello@orao.network>"]
+repository = "https://github.com/orao-network/fuel-vrf"
+rust-version = "1.65"
+edition = "2021"
+
+[workspace.dependencies]
+fuels = { version = "0.26.0", features = ["fuel-core-lib"] }
+fuels-core = "0.26.0"
+fuel-crypto = "0.6"
