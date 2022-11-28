@@ -1,0 +1,8 @@
+[project]
+authors = ["ORAO Network Developers <hello@orao.network>"]
+entry = "main.sw"
+license = "Apache-2.0"
+name = "russian-roulette"
+
+[dependencies]
+vrf_abi = { path = "../../../abi" }
