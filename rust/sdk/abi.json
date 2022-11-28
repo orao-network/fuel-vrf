@@ -457,6 +457,15 @@
     ],
     "functions": [
         {
+            "inputs": [],
+            "name": "get_asset",
+            "output": {
+                "name": "",
+                "type": 16,
+                "typeArguments": null
+            }
+        },
+        {
             "inputs": [
                 {
                     "name": "asset",
@@ -468,15 +477,6 @@
             "output": {
                 "name": "",
                 "type": 25,
-                "typeArguments": null
-            }
-        },
-        {
-            "inputs": [],
-            "name": "get_asset",
-            "output": {
-                "name": "",
-                "type": 16,
                 "typeArguments": null
             }
         },
@@ -496,27 +496,6 @@
                 "name": "",
                 "type": 25,
                 "typeArguments": null
-            }
-        },
-        {
-            "inputs": [
-                {
-                    "name": "seed",
-                    "type": 4,
-                    "typeArguments": null
-                }
-            ],
-            "name": "get_request_by_seed",
-            "output": {
-                "name": "",
-                "type": 8,
-                "typeArguments": [
-                    {
-                        "name": "",
-                        "type": 20,
-                        "typeArguments": null
-                    }
-                ]
             }
         },
         {
@@ -548,6 +527,27 @@
                     "typeArguments": null
                 }
             ],
+            "name": "get_request_by_seed",
+            "output": {
+                "name": "",
+                "type": 8,
+                "typeArguments": [
+                    {
+                        "name": "",
+                        "type": 20,
+                        "typeArguments": null
+                    }
+                ]
+            }
+        },
+        {
+            "inputs": [
+                {
+                    "name": "seed",
+                    "type": 4,
+                    "typeArguments": null
+                }
+            ],
             "name": "request",
             "output": {
                 "name": "",
@@ -558,7 +558,7 @@
     ],
     "loggedTypes": [
         {
-            "logId": 185946,
+            "logId": 0,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -566,7 +566,7 @@
             }
         },
         {
-            "logId": 186890,
+            "logId": 1,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -574,7 +574,7 @@
             }
         },
         {
-            "logId": 188072,
+            "logId": 2,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -582,7 +582,7 @@
             }
         },
         {
-            "logId": 188288,
+            "logId": 3,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -590,7 +590,7 @@
             }
         },
         {
-            "logId": 188802,
+            "logId": 4,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -598,7 +598,7 @@
             }
         },
         {
-            "logId": 190678,
+            "logId": 5,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -606,7 +606,7 @@
             }
         },
         {
-            "logId": 191621,
+            "logId": 6,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -614,7 +614,7 @@
             }
         },
         {
-            "logId": 195547,
+            "logId": 7,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -622,7 +622,7 @@
             }
         },
         {
-            "logId": 196568,
+            "logId": 8,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -630,7 +630,7 @@
             }
         },
         {
-            "logId": 196597,
+            "logId": 9,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -638,7 +638,7 @@
             }
         },
         {
-            "logId": 196614,
+            "logId": 10,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -646,7 +646,7 @@
             }
         },
         {
-            "logId": 196705,
+            "logId": 11,
             "loggedType": {
                 "name": "",
                 "type": 5,
@@ -654,15 +654,7 @@
             }
         },
         {
-            "logId": 197124,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 197795,
+            "logId": 12,
             "loggedType": {
                 "name": "",
                 "type": 6,
@@ -670,87 +662,7 @@
             }
         },
         {
-            "logId": 197815,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 197832,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 198846,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 199866,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 199971,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 200991,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 201349,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 201349,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 201370,
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 201386,
-            "loggedType": {
-                "name": "",
-                "type": 6,
-                "typeArguments": []
-            }
-        },
-        {
-            "logId": 168667,
+            "logId": 13,
             "loggedType": {
                 "name": "",
                 "type": 11,
@@ -758,7 +670,7 @@
             }
         },
         {
-            "logId": 169959,
+            "logId": 14,
             "loggedType": {
                 "name": "",
                 "type": 12,
@@ -766,7 +678,7 @@
             }
         },
         {
-            "logId": 169959,
+            "logId": 15,
             "loggedType": {
                 "name": "",
                 "type": 12,
@@ -774,7 +686,7 @@
             }
         },
         {
-            "logId": 203291,
+            "logId": 16,
             "loggedType": {
                 "name": "",
                 "type": 6,
@@ -782,7 +694,7 @@
             }
         },
         {
-            "logId": 204179,
+            "logId": 17,
             "loggedType": {
                 "name": "",
                 "type": 6,
@@ -790,7 +702,7 @@
             }
         },
         {
-            "logId": 204285,
+            "logId": 18,
             "loggedType": {
                 "name": "",
                 "type": 13,
@@ -798,11 +710,99 @@
             }
         },
         {
-            "logId": 204285,
+            "logId": 19,
             "loggedType": {
                 "name": "",
                 "type": 13,
                 "typeArguments": null
+            }
+        },
+        {
+            "logId": 20,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 21,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 22,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 23,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 24,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 25,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 26,
+            "loggedType": {
+                "name": "",
+                "type": 6,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 27,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 28,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 29,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
+            }
+        },
+        {
+            "logId": 30,
+            "loggedType": {
+                "name": "",
+                "type": 5,
+                "typeArguments": []
             }
         }
     ]

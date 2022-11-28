@@ -1,8 +1,8 @@
 use std::fmt;
 
 use fuels::{
+    core::abi_encoder::ABIEncoder,
     prelude::*,
-    signers::fuel_crypto::Signature,
     tx::{Address, Bytes32, Bytes64},
 };
 
@@ -50,39 +50,6 @@ impl fmt::Debug for bindings::VrfMethods {
     }
 }
 
-impl From<Signature> for bindings::B512 {
-    fn from(x: Signature) -> Self {
-        let mut fst = [0_u8; Signature::LEN / 2];
-        fst.copy_from_slice(&x[..Signature::LEN / 2]);
-        let mut snd = [0_u8; Signature::LEN / 2];
-        snd.copy_from_slice(&x[Signature::LEN / 2..]);
-        bindings::B512 {
-            bytes: [Bits256(fst), Bits256(snd)],
-        }
-    }
-}
-
-impl From<Bytes64> for bindings::B512 {
-    fn from(x: Bytes64) -> Self {
-        let mut fst = [0_u8; Bytes64::LEN / 2];
-        fst.copy_from_slice(&x[..Bytes64::LEN / 2]);
-        let mut snd = [0_u8; Bytes64::LEN / 2];
-        snd.copy_from_slice(&x[Bytes64::LEN / 2..]);
-        bindings::B512 {
-            bytes: [Bits256(fst), Bits256(snd)],
-        }
-    }
-}
-
-impl From<bindings::B512> for Bytes64 {
-    fn from(x: bindings::B512) -> Self {
-        let mut bytes = [0_u8; Bytes64::LEN];
-        bytes[..Bytes64::LEN / 2].copy_from_slice(&x.bytes[0].0);
-        bytes[Bytes64::LEN / 2..].copy_from_slice(&x.bytes[1].0);
-        Self::new(bytes)
-    }
-}
-
 impl bindings::Event {
     pub fn seed(&self) -> &Bits256 {
         match self {
@@ -111,7 +78,7 @@ impl fmt::Display for bindings::Fulfill {
             f,
             "Fulfill: seed={}, randomness={}",
             Bytes32::from(self.seed.0),
-            Bytes64::from(self.randomness.clone())
+            randomness_to_bytes64(self.randomness),
         )
     }
 }
@@ -138,7 +105,7 @@ impl fmt::Display for bindings::Response {
             "Response: seed={}, authority={}, randomness={}",
             Bytes32::from(self.seed.0),
             Bech32Address::from(self.authority),
-            Bytes64::from(self.randomness.clone()),
+            randomness_to_bytes64(self.randomness),
         )
     }
 }
@@ -230,4 +197,11 @@ impl<'a> Iterator for FulfillersKeysIter<'a> {
             _ => None,
         }
     }
+}
+
+pub fn randomness_to_bytes64(randomness: B512) -> Bytes64 {
+    let rnd = ABIEncoder::encode(&[randomness.into_token()])
+        .unwrap()
+        .resolve(0);
+    Bytes64::try_from(&*rnd).expect("64 bytes to equal 512 bits")
 }

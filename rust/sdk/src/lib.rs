@@ -1,10 +1,14 @@
 use fuels::{
-    contract::contract::ContractCallHandler, core::Parameterize, prelude::*,tx::Receipt,
+    contract::contract::ContractCallHandler, core::Parameterize, prelude::*,
+    signers::fuel_crypto::Signature, tx::Receipt,
 };
 
-pub use abi::bindings::{
-    Error as ContractError, Event, Fulfill, Fulfilled, Randomness, RandomnessState, Request, Reset,
-    Response, Unfulfilled, B512,
+pub use abi::{
+    bindings::{
+        Error as ContractError, Event, Fulfill, Fulfilled, Randomness, RandomnessState, Request,
+        Reset, Response, Unfulfilled,
+    },
+    randomness_to_bytes64,
 };
 pub use error::Error;
 
@@ -15,8 +19,8 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 pub const MAX_AUTHORITIES: usize = 10;
 pub const CONTRACT_ID: ContractId = ContractId::new([
-    0x14, 0xba, 0x36, 0xbb, 0x24, 0xff, 0x06, 0x35, 0x2e, 0x69, 0x2d, 0x9c, 0x3b, 0x30, 0x54, 0x8c,
-    0xff, 0xb3, 0xe4, 0xd9, 0x42, 0x82, 0xaa, 0x03, 0x3d, 0x03, 0x28, 0x5a, 0xed, 0xca, 0x4f, 0xa8,
+    0x11, 0xaa, 0xda, 0xd3, 0x3b, 0x00, 0x6b, 0x21, 0x39, 0x0e, 0x14, 0x52, 0xcd, 0x63, 0x54, 0xb6,
+    0xaa, 0x71, 0xbf, 0xd9, 0x97, 0xce, 0x09, 0x77, 0x93, 0x6e, 0xb6, 0x06, 0x37, 0xa9, 0x6a, 0x0e,
 ]);
 
 #[derive(Debug)]
@@ -27,7 +31,7 @@ pub struct Vrf {
 
 impl Vrf {
     pub fn new(contract_id: Bech32ContractId, wallet: WalletUnlocked) -> Self {
-        let abi = abi::bindings::Vrf::new(contract_id.to_string(), wallet);
+        let abi = abi::bindings::Vrf::new(contract_id, wallet);
         Self {
             methods: abi.methods(),
             abi,
@@ -133,4 +137,12 @@ impl Vrf {
     ) -> Result<Vec<D>> {
         Ok(self.abi.logs_with_type(receipts)?)
     }
+}
+
+pub fn signature_to_parts(s: Signature) -> (Bits256, Bits256) {
+    let mut fst = [0_u8; Signature::LEN / 2];
+    fst.copy_from_slice(&s[..Signature::LEN / 2]);
+    let mut snd = [0_u8; Signature::LEN / 2];
+    snd.copy_from_slice(&s[Signature::LEN / 2..]);
+    (Bits256(fst), Bits256(snd))
 }

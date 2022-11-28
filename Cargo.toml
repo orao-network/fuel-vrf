@@ -1,5 +1,5 @@
 [workspace]
-members = ["rust/sdk", "rust/examples/off-chain"]
+members = ["rust/sdk", "rust/examples/off-chain", "rust/examples/call"]
 
 [workspace.package]
 version = "0.1.0"
@@ -9,6 +9,6 @@ rust-version = "1.65"
 edition = "2021"
 
 [workspace.dependencies]
-fuels = { version = "0.26.0", features = ["fuel-core-lib"] }
-fuels-core = "0.26.0"
+fuels = { version = "0.31.1", features = ["fuel-core-lib"] }
+fuels-core = "0.31.1"
 fuel-crypto = "0.6"
