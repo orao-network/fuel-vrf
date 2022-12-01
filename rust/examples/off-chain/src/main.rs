@@ -90,7 +90,7 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
-    progress.set_message("Waiting for randomness being fulfilled..");
+    progress.set_message("Waiting for randomness to be fulfilled..");
     loop {
         let Some(x) = instance.get_request_by_num(response.value).await? else {
             tokio::time::sleep(std::time::Duration::from_secs(1)).await;
