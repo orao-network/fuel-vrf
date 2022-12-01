@@ -1,10 +1,10 @@
 use std::time::Duration;
 
 use clap::Parser;
-use fuel_crypto::fuel_types::{Bytes32, Bytes64};
+use fuel_crypto::fuel_types::{Bytes32};
 use fuels::prelude::*;
 use indicatif::ProgressBar;
-use orao_fuel_vrf::{Event, Fulfilled, RandomnessState, Vrf};
+use orao_fuel_vrf::{Event, Fulfilled, RandomnessState, Vrf, randomness_to_bytes64};
 use tokio::time::timeout;
 
 mod utils;
@@ -104,7 +104,7 @@ async fn main() -> anyhow::Result<()> {
 
         progress.suspend(|| {
             println!("Seed: {}", Bytes32::new(x.seed.0));
-            println!("Randomness: {}", Bytes64::from(randomness));
+            println!("Randomness: {}", randomness_to_bytes64(randomness));
             println!("Fulfilled by: [");
             for key in keys.iter() {
                 println!("    {}", Bech32Address::from(*key).to_string());
