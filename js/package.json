@@ -9,14 +9,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ORAO Network Developers <hello@orao.network>",
-  "license": "Apache-2.0",
+  "license": "ISC",
   "dependencies": {
-    "fuels": "=0.17.0",
+    "fuels": "=0.21.1",
     "tsup": "^6.4.0"
   },
   "devDependencies": {
-    "fuelchain": "=0.17.0",
-    "typechain-target-fuels": "=0.17.0",
+    "fuelchain": "=0.21.1",
+    "typechain-target-fuels": "=0.21.1",
     "typescript": "^4.8.4"
   }
 }

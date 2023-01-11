@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Vrf = exports.CONTRACT_ID = void 0;
 const contracts_1 = require("./contracts");
-exports.CONTRACT_ID = "0x14ba36bb24ff06352e692d9c3b30548cffb3e4d94282aa033d03285aedca4fa8";
+exports.CONTRACT_ID = "0x11aadad33b006b21390e1452cd6354b6aa71bfd997ce0977936eb60637a96a0e";
 class Vrf {
     abi;
     /**

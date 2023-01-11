@@ -101,62 +101,22 @@ export type OptionalRandomnessOutput = Option<RandomnessOutput>;
 
 interface VrfImplAbiInterface extends Interface {
   functions: {
+    configure: FunctionFragment;
+    configure_asset: FunctionFragment;
+    fulfill: FunctionFragment;
+    get_asset: FunctionFragment;
     get_authority: FunctionFragment;
     get_balance: FunctionFragment;
     get_fee: FunctionFragment;
-    get_asset: FunctionFragment;
     get_fulfillment_authorities: FunctionFragment;
     get_num_requests: FunctionFragment;
-    get_request_by_seed: FunctionFragment;
     get_request_by_num: FunctionFragment;
+    get_request_by_seed: FunctionFragment;
     get_requests: FunctionFragment;
-    configure_asset: FunctionFragment;
-    configure: FunctionFragment;
     request: FunctionFragment;
     withdraw_fees: FunctionFragment;
-    fulfill: FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "get_authority",
-    values?: undefined
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_balance",
-    values: [ContractIdInput]
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_fee",
-    values: [ContractIdInput]
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_asset",
-    values?: undefined
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_fulfillment_authorities",
-    values?: undefined
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_num_requests",
-    values?: undefined
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_request_by_seed",
-    values: [string]
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_request_by_num",
-    values: [BigNumberish]
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "get_requests",
-    values: [BigNumberish]
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "configure_asset",
-    values: [ContractIdInput, BigNumberish]
-  ): Uint8Array;
   encodeFunctionData(
     functionFragment: "configure",
     values: [
@@ -165,16 +125,72 @@ interface VrfImplAbiInterface extends Interface {
       [any, any, any, any, any, any, any, any, any, any]
     ]
   ): Uint8Array;
-  encodeFunctionData(functionFragment: "request", values: [string]): Uint8Array;
   encodeFunctionData(
-    functionFragment: "withdraw_fees",
-    values: [ContractIdInput, BigNumberish, AddressInput]
+    functionFragment: "configure_asset",
+    values: [ContractIdInput, BigNumberish]
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: "fulfill",
     values: [string, B512Input]
   ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_asset",
+    values?: undefined
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_authority",
+    values?: undefined
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_balance",
+    values: [ContractIdInput]
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_fee",
+    values: [ContractIdInput]
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_fulfillment_authorities",
+    values?: undefined
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_num_requests",
+    values?: undefined
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_request_by_num",
+    values: [BigNumberish]
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_request_by_seed",
+    values: [string]
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_requests",
+    values: [BigNumberish]
+  ): Uint8Array;
+  encodeFunctionData(functionFragment: "request", values: [string]): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "withdraw_fees",
+    values: [ContractIdInput, BigNumberish, AddressInput]
+  ): Uint8Array;
 
+  decodeFunctionData(
+    functionFragment: "configure",
+    data: BytesLike
+  ): DecodedValue;
+  decodeFunctionData(
+    functionFragment: "configure_asset",
+    data: BytesLike
+  ): DecodedValue;
+  decodeFunctionData(
+    functionFragment: "fulfill",
+    data: BytesLike
+  ): DecodedValue;
+  decodeFunctionData(
+    functionFragment: "get_asset",
+    data: BytesLike
+  ): DecodedValue;
   decodeFunctionData(
     functionFragment: "get_authority",
     data: BytesLike
@@ -188,10 +204,6 @@ interface VrfImplAbiInterface extends Interface {
     data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
-    functionFragment: "get_asset",
-    data: BytesLike
-  ): DecodedValue;
-  decodeFunctionData(
     functionFragment: "get_fulfillment_authorities",
     data: BytesLike
   ): DecodedValue;
@@ -200,23 +212,15 @@ interface VrfImplAbiInterface extends Interface {
     data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
-    functionFragment: "get_request_by_seed",
-    data: BytesLike
-  ): DecodedValue;
-  decodeFunctionData(
     functionFragment: "get_request_by_num",
     data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
+    functionFragment: "get_request_by_seed",
+    data: BytesLike
+  ): DecodedValue;
+  decodeFunctionData(
     functionFragment: "get_requests",
-    data: BytesLike
-  ): DecodedValue;
-  decodeFunctionData(
-    functionFragment: "configure_asset",
-    data: BytesLike
-  ): DecodedValue;
-  decodeFunctionData(
-    functionFragment: "configure",
     data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
@@ -227,22 +231,45 @@ interface VrfImplAbiInterface extends Interface {
     functionFragment: "withdraw_fees",
     data: BytesLike
   ): DecodedValue;
-  decodeFunctionData(
-    functionFragment: "fulfill",
-    data: BytesLike
-  ): DecodedValue;
 }
 
 export class VrfImplAbi extends Contract {
   interface: VrfImplAbiInterface;
   functions: {
+    configure: InvokeFunction<
+      [
+        authority: IdentityInput,
+        fee: BigNumberish,
+        fulfillment_authorities: [
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any
+        ]
+      ],
+      void
+    >;
+
+    configure_asset: InvokeFunction<
+      [asset: ContractIdInput, fee: BigNumberish],
+      void
+    >;
+
+    fulfill: InvokeFunction<[seed: string, signature: B512Input], void>;
+
+    get_asset: InvokeFunction<[], ContractIdOutput>;
+
     get_authority: InvokeFunction<[], IdentityOutput>;
 
     get_balance: InvokeFunction<[asset: ContractIdInput], BN>;
 
     get_fee: InvokeFunction<[asset: ContractIdInput], BN>;
-
-    get_asset: InvokeFunction<[], ContractIdOutput>;
 
     get_fulfillment_authorities: InvokeFunction<
       [],
@@ -251,13 +278,13 @@ export class VrfImplAbi extends Contract {
 
     get_num_requests: InvokeFunction<[], BN>;
 
-    get_request_by_seed: InvokeFunction<
-      [seed: string],
+    get_request_by_num: InvokeFunction<
+      [num: BigNumberish],
       OptionalRandomnessOutput
     >;
 
-    get_request_by_num: InvokeFunction<
-      [num: BigNumberish],
+    get_request_by_seed: InvokeFunction<
+      [seed: string],
       OptionalRandomnessOutput
     >;
 
@@ -291,31 +318,6 @@ export class VrfImplAbi extends Contract {
       ]
     >;
 
-    configure_asset: InvokeFunction<
-      [asset: ContractIdInput, fee: BigNumberish],
-      void
-    >;
-
-    configure: InvokeFunction<
-      [
-        authority: IdentityInput,
-        fee: BigNumberish,
-        fulfillment_authorities: [
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any
-        ]
-      ],
-      void
-    >;
-
     request: InvokeFunction<[seed: string], BN>;
 
     withdraw_fees: InvokeFunction<
@@ -326,7 +328,5 @@ export class VrfImplAbi extends Contract {
       ],
       void
     >;
-
-    fulfill: InvokeFunction<[seed: string, signature: B512Input], void>;
   };
 }

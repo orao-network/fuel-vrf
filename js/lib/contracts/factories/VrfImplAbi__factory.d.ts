@@ -1,4 +1,4 @@
-import type { Provider, Wallet, AbstractAddress } from "fuels";
+import type { Provider, BaseWalletLocked, AbstractAddress } from "fuels";
 import type { VrfImplAbi, VrfImplAbiInterface } from "../VrfImplAbi";
 export declare class VrfImplAbi__factory {
     static readonly abi: {
@@ -85,5 +85,5 @@ export declare class VrfImplAbi__factory {
         })[];
     };
     static createInterface(): VrfImplAbiInterface;
-    static connect(id: string | AbstractAddress, walletOrProvider: Wallet | Provider): VrfImplAbi;
+    static connect(id: string | AbstractAddress, walletOrProvider: BaseWalletLocked | Provider): VrfImplAbi;
 }

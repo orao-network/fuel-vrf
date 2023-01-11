@@ -1,6 +1,6 @@
-import { Wallet, Provider, AbstractAddress, BN, BigNumberish } from "fuels";
+import { Provider, AbstractAddress, BN, BigNumberish, BaseWalletLocked } from "fuels";
 import { AddressOutput, ContractIdInput, ContractIdOutput, IdentityOutput, OptionalRandomnessOutput } from "./contracts/VrfImplAbi";
-export declare const CONTRACT_ID = "0x14ba36bb24ff06352e692d9c3b30548cffb3e4d94282aa033d03285aedca4fa8";
+export declare const CONTRACT_ID = "0x11aadad33b006b21390e1452cd6354b6aa71bfd997ce0977936eb60637a96a0e";
 export declare class Vrf {
     private abi;
     /**
@@ -8,7 +8,7 @@ export declare class Vrf {
      *
      * Note, that you'll need a configured wallet to perform reqeusts.
      */
-    constructor(walletOrProvider: Wallet | Provider, id?: string | AbstractAddress);
+    constructor(walletOrProvider: BaseWalletLocked | Provider, id?: string | AbstractAddress);
     /**
      * Returns the configured authority.
      */
