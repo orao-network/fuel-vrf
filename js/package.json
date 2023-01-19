@@ -1,7 +1,7 @@
 {
-  "name": "orao-fuel-vrf",
+  "name": "@orao-network/fuel-vrf",
   "version": "0.1.0",
-  "description": "VRF SDK for the Fuel Network",
+  "description": "ORAO VRF Verifiable Random Function SDK for the Fuel Network",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -18,5 +18,25 @@
     "fuelchain": "=0.21.1",
     "typechain-target-fuels": "=0.21.1",
     "typescript": "^4.8.4"
+  },
+  "keywords": [
+    "vrf",
+    "randomizer",
+    "rng",
+    "fuel vrf",
+    "on-chain",
+    "random",
+    "number"
+  ],
+  "bugs": {
+    "url": "https://github.com/orao-network/fuel-vrf/issues"
+  },
+  "homepage": "https://github.com/orao-network/fuel-vrf#readme",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orao-network/fuel-vrf.git"
   }
 }
