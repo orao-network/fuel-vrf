@@ -7,6 +7,8 @@ authors = ["ORAO Network Developers <hello@orao.network>"]
 repository = "https://github.com/orao-network/fuel-vrf"
 rust-version = "1.65"
 edition = "2021"
+keywords = ["solana", "vrf", "ed25519", "anchor"]
+description = "ORAO Verifiable Random Function for Fuel Network."
 
 [workspace.dependencies]
 fuels = { version = "0.31.1", features = ["fuel-core-lib"] }
