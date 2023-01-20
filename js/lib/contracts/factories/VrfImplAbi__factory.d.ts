@@ -83,6 +83,7 @@ export declare class VrfImplAbi__factory {
                 typeArguments: null;
             };
         })[];
+        messagesTypes: never[];
     };
     static createInterface(): VrfImplAbiInterface;
     static connect(id: string | AbstractAddress, walletOrProvider: BaseWalletLocked | Provider): VrfImplAbi;

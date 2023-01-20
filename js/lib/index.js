@@ -84,9 +84,11 @@ class Vrf {
             asset = await this.getAsset();
         }
         let fee = await this.getFee(asset);
-        let call = this.abi.functions.request(seedHex);
-        let no = (await call.txParams({ gasPrice: 1 }).callParams({ "forward": { "amount": fee, "assetId": asset.value } }).call()).value;
-        return [seedHex, no];
+        let call = this.abi.functions
+            .request(seedHex)
+            .txParams({ gasPrice: 1 })
+            .callParams({ "forward": { "amount": fee, "assetId": asset.value } });
+        return (await call.call()).value;
     }
 }
 exports.Vrf = Vrf;

@@ -1,5 +1,6 @@
 import { Provider, AbstractAddress, BN, BigNumberish, BaseWalletLocked } from "fuels";
-import { AddressOutput, ContractIdInput, ContractIdOutput, IdentityOutput, OptionalRandomnessOutput } from "./contracts/VrfImplAbi";
+import { Option } from "./contracts/common";
+import { AddressOutput, ContractIdInput, ContractIdOutput, IdentityOutput, RandomnessOutput } from "./contracts/VrfImplAbi";
 export declare const CONTRACT_ID = "0x11aadad33b006b21390e1452cd6354b6aa71bfd997ce0977936eb60637a96a0e";
 export declare class Vrf {
     private abi;
@@ -38,7 +39,7 @@ export declare class Vrf {
     /**
      * Returns the given randomness request (if exists).
      */
-    getRequest(seedHexOrNum: string | BigNumberish): Promise<OptionalRandomnessOutput>;
+    getRequest(seedHexOrNum: string | BigNumberish): Promise<Option<RandomnessOutput>>;
     /**
      * Performs a randomness request.
      *
@@ -48,5 +49,5 @@ export declare class Vrf {
      *
      * @returns a pair of seed and request number.
      */
-    request(seedHex: string, useAdditionalAsset?: boolean): Promise<[string, BN]>;
+    request(seedHex: string, useAdditionalAsset?: boolean): Promise<BN>;
 }

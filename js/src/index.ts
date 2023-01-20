@@ -1,6 +1,7 @@
 import { Provider, AbstractAddress, BN, BigNumberish, BaseWalletLocked } from "fuels";
 import { VrfImplAbi__factory, VrfImplAbi } from "./contracts";
-import { AddressOutput, ContractIdInput, ContractIdOutput, IdentityOutput, OptionalAddressOutput, OptionalRandomnessOutput } from "./contracts/VrfImplAbi";
+import { Option } from "./contracts/common";
+import { AddressOutput, ContractIdInput, ContractIdOutput, IdentityOutput, RandomnessOutput } from "./contracts/VrfImplAbi";
 
 export const CONTRACT_ID = "0x11aadad33b006b21390e1452cd6354b6aa71bfd997ce0977936eb60637a96a0e";
 
@@ -52,7 +53,7 @@ export class Vrf {
     async getFulfillmentAuthorities(): Promise<AddressOutput[]> {
         const output = [];
         for (let address of (await this.abi.functions.get_fulfillment_authorities().get()).value) {
-            let a = address as OptionalAddressOutput;
+            let a = address;
             if (a) {
                 output.push(a);
             }
@@ -70,7 +71,7 @@ export class Vrf {
     /**
      * Returns the given randomness request (if exists).
      */
-    async getRequest(seedHexOrNum: string | BigNumberish): Promise<OptionalRandomnessOutput> {
+    async getRequest(seedHexOrNum: string | BigNumberish): Promise<Option<RandomnessOutput>> {
         if (typeof seedHexOrNum == "string") {
             return (await this.abi.functions.get_request_by_seed(seedHexOrNum).get()).value;
         } else {
@@ -87,14 +88,16 @@ export class Vrf {
      *
      * @returns a pair of seed and request number.
      */
-    async request(seedHex: string, useAdditionalAsset: boolean = false): Promise<[string, BN]> {
+    async request(seedHex: string, useAdditionalAsset: boolean = false): Promise<BN> {
         let asset = { value: '0x0000000000000000000000000000000000000000000000000000000000000000' };
         if (useAdditionalAsset) {
             asset = await this.getAsset();
         }
         let fee = await this.getFee(asset);
-        let call = this.abi.functions.request(seedHex);
-        let no = (await call.txParams({ gasPrice: 1 }).callParams({ "forward": { "amount": fee, "assetId": asset.value } }).call()).value;
-        return [seedHex, no];
+        let call = this.abi.functions
+            .request(seedHex)
+            .txParams({ gasPrice: 1 })
+            .callParams({ "forward": { "amount": fee, "assetId": asset.value } });
+        return (await call.call()).value;
     }
 }
