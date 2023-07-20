@@ -1,4 +1,7 @@
-use fuels::prelude::{Bits256, CallParameters, TxParameters};
+use fuels::{
+    prelude::{CallParameters, TxParameters},
+    types::Bits256,
+};
 
 pub mod bindings {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -21,7 +24,7 @@ impl bindings::RussianRoulette {
             .methods()
             .status()
             // this is necessary, because our contract calls VRF contract
-            .set_contracts(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .set_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
             .simulate()
             .await?
             .value)
@@ -36,16 +39,18 @@ impl bindings::RussianRoulette {
         let fee = self
             .methods()
             .round_cost()
-            .set_contracts(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .set_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
             .simulate()
             .await?
             .value;
 
+        println!("VRF fee is: {:?}", fee);
+
         self.methods()
             .spin_and_pull_the_trigger(Bits256(force))
-            .tx_params(TxParameters::new(Some(1), None, None))
-            .call_params(CallParameters::new(Some(fee), None, None))
-            .set_contracts(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .tx_params(TxParameters::default().set_gas_price(1))
+            .call_params(CallParameters::default().set_amount(fee))?
+            .set_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
             .call()
             .await?;
 

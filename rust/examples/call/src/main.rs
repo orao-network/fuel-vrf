@@ -8,14 +8,14 @@ use tokio::time::timeout;
 use crate::abi::bindings::Status;
 
 pub const CONTRACT_ID: ContractId = ContractId::new([
-    0xd3, 0x6c, 0xcd, 0x47, 0x60, 0x79, 0x46, 0xb6, 0x49, 0x99, 0xd4, 0x82, 0xfe, 0xa5, 0x08, 0x5e,
-    0xdc, 0xa2, 0x29, 0x3f, 0x29, 0xae, 0x01, 0x0a, 0x38, 0x51, 0xcb, 0x65, 0xf8, 0xdb, 0x47, 0xea,
+    0xc4, 0x43, 0x27, 0xa4, 0x82, 0x11, 0x5e, 0x51, 0x3e, 0x6e, 0xec, 0x43, 0x96, 0xa4, 0x36, 0xd1,
+    0x58, 0xd8, 0xae, 0xb9, 0x0b, 0x06, 0xd9, 0x5c, 0x1f, 0x87, 0x08, 0x9f, 0x69, 0x31, 0x25, 0xed,
 ]);
 
 mod abi;
 mod utils;
 
-/// Fuel VRF off-chain example.
+/// Fuel VRF on-chain call example.
 #[derive(Debug, Parser)]
 pub struct Args {
     /// Id of a published RussianRoulette contract.
@@ -35,7 +35,7 @@ pub struct Args {
     pub account_index: usize,
 
     /// Fuel node endpoint to connect to.
-    #[arg(long, default_value = "http://node-beta-2.fuel.network/graphql")]
+    #[arg(long, default_value = "https://beta-3.fuel.network/graphql")]
     pub endpoint: String,
 }
 
@@ -74,7 +74,7 @@ async fn main() -> anyhow::Result<()> {
 
     let prev_round = match status {
         Status::PlayerIsDead(x) => {
-            eprintln!("Can't play – player died at round {x}.");
+            eprintln!("Can't play – player died at round {x} 💐🪦.");
             return Ok(());
         }
         Status::SpinningBarrel(_) => {

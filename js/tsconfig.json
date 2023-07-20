@@ -7,12 +7,13 @@
     ],
     "module": "commonjs",
     "target": "es2022",
-    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "lib",
-    "declaration": true
+    "outDir": "dist",
+    "declaration": true,
+    "strict": true,
+    "noUnusedLocals": true
   },
   "include": [
     "src/**/*"

@@ -1,68 +1,59 @@
-library randomness;
+library;
 
 use std::address::Address;
 use std::b512::B512;
 use std::constants::{BASE_ASSET_ID, ZERO_B256};
+use std::error_signals::FAILED_REQUIRE_SIGNAL;
 use std::revert::{require, revert};
 use std::option::Option;
 use std::logging::log;
 
+/// Must be a quorum requirement for `MAX_AUTHORITIES`.
+pub const MAX_FULFILLERS: u8 = 7;
+
 /// List of fulfiller's keys (`Address::zeroed()`-terminated).
 pub struct FulfillersKeys {
-    // TODO: No nested StorageVec nor mutable arrays support.
-    key1: Address,
-    key2: Address,
-    key3: Address,
-    key4: Address,
-    key5: Address,
-    key6: Address,
-    key7: Address,
+    keys: [Address; 7] /* TODO: can't specify a constant here */ ,
 }
 
 impl FulfillersKeys {
+    /// Creates new instance with all keys zeroed.
+    pub fn new() -> FulfillersKeys {
+        FulfillersKeys {
+            keys: [
+                Address::from(ZERO_B256),
+                Address::from(ZERO_B256),
+                Address::from(ZERO_B256),
+                Address::from(ZERO_B256),
+                Address::from(ZERO_B256),
+                Address::from(ZERO_B256),
+                Address::from(ZERO_B256),
+            ],
+        }
+    }
+
     /// Puts another fulfiller's key into the list.
     ///
-    /// Returns the updated len.
-    fn put(ref mut self, authority: Address) -> Option<u8> {
-        if self.key1.value == ZERO_B256 {
-            self.key1 = authority;
-            Option::Some(1u8)
-        } else if self.key1 == authority {
-            Option::None
-        } else if self.key2.value == ZERO_B256 {
-            self.key2 = authority;
-            Option::Some(2u8)
-        } else if self.key2 == authority {
-            Option::None
-        } else if self.key3.value == ZERO_B256 {
-            self.key3 = authority;
-            Option::Some(3u8)
-        } else if self.key3 == authority {
-            Option::None
-        } else if self.key4.value == ZERO_B256 {
-            self.key4 = authority;
-            Option::Some(4u8)
-        } else if self.key4 == authority {
-            Option::None
-        } else if self.key5.value == ZERO_B256 {
-            self.key5 = authority;
-            Option::Some(5u8)
-        } else if self.key5 == authority {
-            Option::None
-        } else if self.key6.value == ZERO_B256 {
-            self.key6 = authority;
-            Option::Some(6u8)
-        } else if self.key6 == authority {
-            Option::None
-        } else if self.key7.value == ZERO_B256 {
-            self.key7 = authority;
-            Option::Some(7u8)
-        } else if self.key7 == authority {
-            Option::None
-        } else {
-            log("Fulfill overflow");
-            revert(42);
+    /// Returns the updated len. Returns None if this authority is present.
+    pub fn put(ref mut self, authority: Address) -> Option<u8> {
+        let mut keys = self.keys;
+        let mut i: u8 = 0;
+        while i < MAX_FULFILLERS {
+            if keys[i].value == ZERO_B256 {
+                keys[i] = authority;
+                self.keys = keys;
+                return Option::Some(i + 1_u8);
+            } else if keys[i] == authority {
+                return Option::None;
+            }
+            i += 1_u8;
         }
+
+        // Must not reach this, because the quorum is ether achieved
+        // or `MAX_FULFILLERS` and `MAX_AUTHORITIES` does not match
+        log("Fulfill overflow");
+        revert(FAILED_REQUIRE_SIGNAL);
+        Option::None
     }
 }
 
@@ -80,6 +71,16 @@ pub struct Unfulfilled {
     keys: FulfillersKeys,
 }
 
+impl Unfulfilled {
+    /// Creates new unfulfilled randomness state.
+    pub fn new() -> Unfulfilled {
+        Unfulfilled {
+            randomness: B512::new(),
+            keys: FulfillersKeys::new(),
+        }
+    }
+}
+
 /// Fulfilled randomness.
 pub struct Fulfilled {
     /// Resulting randomness.
@@ -94,17 +95,24 @@ pub struct Randomness {
     state: RandomnessState,
 }
 
+impl Randomness {
+    /// Creates new unfulfilled randomness for the given seed.
+    pub fn new(seed: b256) -> Randomness {
+        Randomness {
+            seed,
+            state: RandomnessState::Unfulfilled(Unfulfilled::new()),
+        }
+    }
+}
+
 impl Unfulfilled {
-    /// Reverts if this authority already responded.
+    /// Adds another response to this unfulfilled randomness.
     ///
-    /// Returns number of responses.
-    fn fulfill(ref mut self, authority: Address, randomness: B512) -> u8 {
+    /// Returns new number of responses. Returns `None` if authority is already present.
+    pub fn fulfill(ref mut self, authority: Address, randomness: B512) -> Option<u8> {
         let num_responses = match self.keys.put(authority) {
             Option::Some(n) => n,
-            Option::None => {
-                log("Already responded");
-                revert(42);
-            }
+            Option::None => return Option::None,
         };
 
         let (l1, l2) = self.randomness.into();
@@ -114,18 +122,12 @@ impl Unfulfilled {
             bytes: [l1 ^ r1, l2 ^ r2],
         };
 
-        num_responses
+        Option::Some(num_responses)
     }
 
     /// Clears the state making this unfulfilled request appear as new.
-    fn reset(ref mut self) {
-        self.keys.key1.value = ZERO_B256;
-        self.keys.key2.value = ZERO_B256;
-        self.keys.key3.value = ZERO_B256;
-        self.keys.key4.value = ZERO_B256;
-        self.keys.key5.value = ZERO_B256;
-        self.keys.key6.value = ZERO_B256;
-        self.keys.key7.value = ZERO_B256;
+    pub fn reset(ref mut self) {
+        self.keys = FulfillersKeys::new();
         self.randomness = B512::new();
     }
 }

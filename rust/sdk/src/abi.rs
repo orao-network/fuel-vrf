@@ -4,6 +4,7 @@ use fuels::{
     core::abi_encoder::ABIEncoder,
     prelude::*,
     tx::{Address, Bytes32, Bytes64},
+    types::{traits::Tokenizable, Bits256, Identity, B512},
 };
 
 pub mod bindings {
@@ -14,23 +15,24 @@ impl std::error::Error for bindings::Error {}
 impl fmt::Display for bindings::Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let msg = match self {
-            crate::ContractError::ContractNotConfigured() => "contract is not configured",
-            crate::ContractError::AssetNotConfigured() => "the asset is not configured",
-            crate::ContractError::NotAuthorized() => "not authorized",
-            crate::ContractError::RemainingAssets() => {
+            crate::ContractError::ContractNotConfigured => "contract is not configured",
+            crate::ContractError::AssetNotConfigured => "the asset is not configured",
+            crate::ContractError::NotAuthorized => "not authorized",
+            crate::ContractError::RemainingAssets => {
                 "withdraw asset fees before changing the asset"
             }
-            crate::ContractError::NonZeroFee() => "set fee to 0 when disabing the asset",
-            crate::ContractError::ZeroAuthority() => "zero authority is not allowed",
-            crate::ContractError::ZeroFee() => "zero fee is not allowed",
-            crate::ContractError::NoFeePaid() => "client must pay the fee",
-            crate::ContractError::WrongFeePaid() => "client must pay the correct fee",
-            crate::ContractError::SeedInUse() => "seed is in use",
-            crate::ContractError::NoAmountSpecified() => "you should specify an amount",
-            crate::ContractError::NotEnoughFunds() => "not enough funds to withdraw",
-            crate::ContractError::UnknownRequest() => "request seed is unknown",
-            crate::ContractError::InvalidResponse() => "randomness response is invalid",
-            crate::ContractError::Fulfilled() => "request is fulfilled",
+            crate::ContractError::NonZeroFee => "set fee to 0 when disabing the asset",
+            crate::ContractError::ZeroAuthority => "zero authority is not allowed",
+            crate::ContractError::ZeroFee => "zero fee is not allowed",
+            crate::ContractError::NoFeePaid => "client must pay the fee",
+            crate::ContractError::WrongFeePaid => "client must pay the correct fee",
+            crate::ContractError::SeedInUse => "seed is in use",
+            crate::ContractError::NoAmountSpecified => "you should specify an amount",
+            crate::ContractError::NotEnoughFunds => "not enough funds to withdraw",
+            crate::ContractError::UnknownRequest => "request seed is unknown",
+            crate::ContractError::InvalidResponse => "randomness response is invalid",
+            crate::ContractError::Responded => "an authority is already responded",
+            crate::ContractError::Fulfilled => "request is fulfilled",
         };
         f.write_str(msg)
     }
@@ -39,7 +41,7 @@ impl fmt::Display for bindings::Error {
 impl fmt::Debug for bindings::Vrf {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Vrf")
-            .field("contract_id", self.get_contract_id())
+            .field("contract_id", self.contract_id())
             .finish_non_exhaustive()
     }
 }
@@ -117,6 +119,13 @@ impl fmt::Display for bindings::Reset {
 }
 
 impl bindings::FulfillersKeys {
+    pub fn is_empty(&self) -> bool {
+        self.keys
+            .get(0)
+            .map(|x| *x == Address::zeroed())
+            .unwrap_or(true)
+    }
+
     pub fn iter(&self) -> FulfillersKeysIter<'_> {
         FulfillersKeysIter::new(self)
     }
@@ -137,64 +146,16 @@ impl<'a> Iterator for FulfillersKeysIter<'a> {
     type Item = &'a Address;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.next {
-            0 => {
-                if self.keys.key_1 == Address::zeroed() {
+        match self.keys.keys.get(self.next as usize) {
+            Some(addr) => {
+                if *addr == Address::zeroed() {
                     None
                 } else {
                     self.next += 1;
-                    Some(&self.keys.key_1)
+                    Some(addr)
                 }
             }
-            1 => {
-                if self.keys.key_2 == Address::zeroed() {
-                    None
-                } else {
-                    self.next += 1;
-                    Some(&self.keys.key_2)
-                }
-            }
-            2 => {
-                if self.keys.key_3 == Address::zeroed() {
-                    None
-                } else {
-                    self.next += 1;
-                    Some(&self.keys.key_3)
-                }
-            }
-            3 => {
-                if self.keys.key_4 == Address::zeroed() {
-                    None
-                } else {
-                    self.next += 1;
-                    Some(&self.keys.key_4)
-                }
-            }
-            4 => {
-                if self.keys.key_5 == Address::zeroed() {
-                    None
-                } else {
-                    self.next += 1;
-                    Some(&self.keys.key_5)
-                }
-            }
-            5 => {
-                if self.keys.key_6 == Address::zeroed() {
-                    None
-                } else {
-                    self.next += 1;
-                    Some(&self.keys.key_6)
-                }
-            }
-            6 => {
-                if self.keys.key_7 == Address::zeroed() {
-                    None
-                } else {
-                    self.next += 1;
-                    Some(&self.keys.key_7)
-                }
-            }
-            _ => None,
+            None => None,
         }
     }
 }

@@ -1,4 +1,4 @@
-# ORAO VRF for FUEL blockchain
+# ORAO VRF SDK for Fuel blockchain
 
 ## Building
 Make sure to have a working rust development environment.
@@ -22,7 +22,7 @@ This will install the Fuel latest toolchain, forc-wallet, explorer cli tool and 
 
 
 3. Build the SDK
-Current version will build for Fuel's beta-2 testnet.
+Current version will build for Fuel's beta-3 testnet.
 This command will also build sample apps
 
 ```sh

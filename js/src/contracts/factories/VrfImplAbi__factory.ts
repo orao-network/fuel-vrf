@@ -4,13 +4,13 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.29.0
-  Forc version: 0.32.2
-  Fuel-Core version: 0.15.1
+  Fuels version: 0.40.0
+  Forc version: 0.35.5
+  Fuel-Core version: 0.17.3
 */
 
 import { Interface, Contract } from "fuels";
-import type { Provider, BaseWalletLocked, AbstractAddress } from "fuels";
+import type { Provider, Account, AbstractAddress } from "fuels";
 import type { VrfImplAbi, VrfImplAbiInterface } from "../VrfImplAbi";
 
 const _abi = {
@@ -27,7 +27,7 @@ const _abi = {
       "components": [
         {
           "name": "__array_element",
-          "type": 8,
+          "type": 9,
           "typeArguments": [
             {
               "name": "",
@@ -45,7 +45,7 @@ const _abi = {
       "components": [
         {
           "name": "__array_element",
-          "type": 8,
+          "type": 9,
           "typeArguments": [
             {
               "name": "",
@@ -63,7 +63,7 @@ const _abi = {
       "components": [
         {
           "name": "__array_element",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -71,12 +71,24 @@ const _abi = {
     },
     {
       "typeId": 4,
+      "type": "[_; 7]",
+      "components": [
+        {
+          "name": "__array_element",
+          "type": 14,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 5,
       "type": "b256",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 5,
+      "typeId": 6,
       "type": "enum Error",
       "components": [
         {
@@ -150,6 +162,11 @@ const _abi = {
           "typeArguments": null
         },
         {
+          "name": "Responded",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
           "name": "Fulfilled",
           "type": 0,
           "typeArguments": null
@@ -158,7 +175,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 6,
+      "typeId": 7,
       "type": "enum Event",
       "components": [
         {
@@ -185,7 +202,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 7,
+      "typeId": 8,
       "type": "enum Identity",
       "components": [
         {
@@ -202,7 +219,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 8,
+      "typeId": 9,
       "type": "enum Option",
       "components": [
         {
@@ -212,16 +229,16 @@ const _abi = {
         },
         {
           "name": "Some",
-          "type": 10,
+          "type": 11,
           "typeArguments": null
         }
       ],
       "typeParameters": [
-        10
+        11
       ]
     },
     {
-      "typeId": 9,
+      "typeId": 10,
       "type": "enum RandomnessState",
       "components": [
         {
@@ -238,26 +255,20 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 10,
+      "typeId": 11,
       "type": "generic T",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 11,
+      "typeId": 12,
       "type": "str[16]",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 12,
-      "type": "str[17]",
-      "components": null,
-      "typeParameters": null
-    },
-    {
       "typeId": 13,
-      "type": "str[30]",
+      "type": "str[17]",
       "components": null,
       "typeParameters": null
     },
@@ -267,7 +278,7 @@ const _abi = {
       "components": [
         {
           "name": "value",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -291,7 +302,7 @@ const _abi = {
       "components": [
         {
           "name": "value",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -303,7 +314,7 @@ const _abi = {
       "components": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         },
         {
@@ -336,38 +347,8 @@ const _abi = {
       "type": "struct FulfillersKeys",
       "components": [
         {
-          "name": "key1",
-          "type": 14,
-          "typeArguments": null
-        },
-        {
-          "name": "key2",
-          "type": 14,
-          "typeArguments": null
-        },
-        {
-          "name": "key3",
-          "type": 14,
-          "typeArguments": null
-        },
-        {
-          "name": "key4",
-          "type": 14,
-          "typeArguments": null
-        },
-        {
-          "name": "key5",
-          "type": 14,
-          "typeArguments": null
-        },
-        {
-          "name": "key6",
-          "type": 14,
-          "typeArguments": null
-        },
-        {
-          "name": "key7",
-          "type": 14,
+          "name": "keys",
+          "type": 4,
           "typeArguments": null
         }
       ],
@@ -379,12 +360,12 @@ const _abi = {
       "components": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         },
         {
           "name": "state",
-          "type": 9,
+          "type": 10,
           "typeArguments": null
         }
       ],
@@ -396,12 +377,12 @@ const _abi = {
       "components": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         },
         {
           "name": "client",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
@@ -418,7 +399,7 @@ const _abi = {
       "components": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -430,7 +411,7 @@ const _abi = {
       "components": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         },
         {
@@ -475,7 +456,7 @@ const _abi = {
       "inputs": [
         {
           "name": "authority",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
@@ -494,7 +475,16 @@ const _abi = {
         "name": "",
         "type": 0,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
@@ -514,13 +504,22 @@ const _abi = {
         "name": "",
         "type": 0,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         },
         {
@@ -534,7 +533,16 @@ const _abi = {
         "name": "",
         "type": 0,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
     },
     {
       "inputs": [],
@@ -543,16 +551,32 @@ const _abi = {
         "name": "",
         "type": 16,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [],
       "name": "get_authority",
       "output": {
         "name": "",
-        "type": 7,
+        "type": 8,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
@@ -567,7 +591,15 @@ const _abi = {
         "name": "",
         "type": 25,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
@@ -582,7 +614,15 @@ const _abi = {
         "name": "",
         "type": 25,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [],
@@ -591,7 +631,15 @@ const _abi = {
         "name": "",
         "type": 1,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [],
@@ -600,7 +648,15 @@ const _abi = {
         "name": "",
         "type": 25,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
@@ -613,7 +669,7 @@ const _abi = {
       "name": "get_request_by_num",
       "output": {
         "name": "",
-        "type": 8,
+        "type": 9,
         "typeArguments": [
           {
             "name": "",
@@ -621,20 +677,28 @@ const _abi = {
             "typeArguments": null
           }
         ]
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         }
       ],
       "name": "get_request_by_seed",
       "output": {
         "name": "",
-        "type": 8,
+        "type": 9,
         "typeArguments": [
           {
             "name": "",
@@ -642,7 +706,15 @@ const _abi = {
             "typeArguments": null
           }
         ]
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
@@ -657,13 +729,21 @@ const _abi = {
         "name": "",
         "type": 2,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
         {
           "name": "seed",
-          "type": 4,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -672,7 +752,20 @@ const _abi = {
         "name": "",
         "type": 25,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        },
+        {
+          "name": "payable",
+          "arguments": []
+        }
+      ]
     },
     {
       "inputs": [
@@ -697,7 +790,16 @@ const _abi = {
         "name": "",
         "type": 0,
         "typeArguments": null
-      }
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
     }
   ],
   "loggedTypes": [
@@ -705,7 +807,7 @@ const _abi = {
       "logId": 0,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -713,7 +815,7 @@ const _abi = {
       "logId": 1,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -721,7 +823,7 @@ const _abi = {
       "logId": 2,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -729,7 +831,7 @@ const _abi = {
       "logId": 3,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -737,7 +839,7 @@ const _abi = {
       "logId": 4,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -745,7 +847,7 @@ const _abi = {
       "logId": 5,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -753,7 +855,7 @@ const _abi = {
       "logId": 6,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -761,7 +863,7 @@ const _abi = {
       "logId": 7,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -769,7 +871,7 @@ const _abi = {
       "logId": 8,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -777,7 +879,7 @@ const _abi = {
       "logId": 9,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -785,7 +887,7 @@ const _abi = {
       "logId": 10,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -793,7 +895,7 @@ const _abi = {
       "logId": 11,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -809,8 +911,8 @@ const _abi = {
       "logId": 13,
       "loggedType": {
         "name": "",
-        "type": 11,
-        "typeArguments": null
+        "type": 7,
+        "typeArguments": []
       }
     },
     {
@@ -825,8 +927,8 @@ const _abi = {
       "logId": 15,
       "loggedType": {
         "name": "",
-        "type": 12,
-        "typeArguments": null
+        "type": 6,
+        "typeArguments": []
       }
     },
     {
@@ -841,7 +943,7 @@ const _abi = {
       "logId": 17,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -849,8 +951,8 @@ const _abi = {
       "logId": 18,
       "loggedType": {
         "name": "",
-        "type": 13,
-        "typeArguments": null
+        "type": 7,
+        "typeArguments": []
       }
     },
     {
@@ -865,15 +967,15 @@ const _abi = {
       "logId": 20,
       "loggedType": {
         "name": "",
-        "type": 5,
-        "typeArguments": []
+        "type": 13,
+        "typeArguments": null
       }
     },
     {
       "logId": 21,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -881,7 +983,7 @@ const _abi = {
       "logId": 22,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -889,7 +991,7 @@ const _abi = {
       "logId": 23,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -897,7 +999,7 @@ const _abi = {
       "logId": 24,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -905,7 +1007,7 @@ const _abi = {
       "logId": 25,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -921,7 +1023,7 @@ const _abi = {
       "logId": 27,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -929,7 +1031,7 @@ const _abi = {
       "logId": 28,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -937,7 +1039,7 @@ const _abi = {
       "logId": 29,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -945,12 +1047,21 @@ const _abi = {
       "logId": 30,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 31,
+      "loggedType": {
+        "name": "",
+        "type": 6,
         "typeArguments": []
       }
     }
   ],
-  "messagesTypes": []
+  "messagesTypes": [],
+  "configurables": []
 }
 
 export class VrfImplAbi__factory {
@@ -960,8 +1071,8 @@ export class VrfImplAbi__factory {
   }
   static connect(
     id: string | AbstractAddress,
-    walletOrProvider: BaseWalletLocked | Provider
+    accountOrProvider: Account | Provider
   ): VrfImplAbi {
-    return new Contract(id, _abi, walletOrProvider) as unknown as VrfImplAbi
+    return new Contract(id, _abi, accountOrProvider) as unknown as VrfImplAbi
   }
 }

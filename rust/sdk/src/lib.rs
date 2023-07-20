@@ -1,7 +1,4 @@
-use fuels::{
-    contract::contract::ContractCallHandler, core::Parameterize, prelude::*,
-    signers::fuel_crypto::Signature, tx::Receipt,
-};
+use std::{convert::identity, fmt::Debug, time::Duration};
 
 pub use abi::{
     bindings::{
@@ -10,6 +7,18 @@ pub use abi::{
     },
     randomness_to_bytes64,
 };
+use fuels::{
+    prelude::Transaction,
+    programs::{call_response::FuelCallResponse, contract::ContractCallHandler},
+    types::traits::Tokenizable,
+};
+use fuels::{
+    prelude::*,
+    signers::fuel_crypto::Signature,
+    tx::{Receipt, ScriptExecutionResult},
+    types::{Bits256, Identity},
+};
+
 pub use error::Error;
 
 pub mod abi;
@@ -19,8 +28,8 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 pub const MAX_AUTHORITIES: usize = 10;
 pub const CONTRACT_ID: ContractId = ContractId::new([
-    0x11, 0xaa, 0xda, 0xd3, 0x3b, 0x00, 0x6b, 0x21, 0x39, 0x0e, 0x14, 0x52, 0xcd, 0x63, 0x54, 0xb6,
-    0xaa, 0x71, 0xbf, 0xd9, 0x97, 0xce, 0x09, 0x77, 0x93, 0x6e, 0xb6, 0x06, 0x37, 0xa9, 0x6a, 0x0e,
+    0xc9, 0x70, 0xd8, 0xb5, 0x49, 0x5e, 0x76, 0xee, 0x18, 0x58, 0x82, 0x7e, 0x54, 0x0b, 0xce, 0x5e,
+    0x57, 0x8b, 0x6c, 0x7a, 0x65, 0x01, 0xbd, 0x67, 0xd5, 0x71, 0x2f, 0x96, 0x6b, 0x3e, 0xa4, 0x00,
 ]);
 
 #[derive(Debug)]
@@ -46,6 +55,7 @@ impl Vrf {
     ///
     /// ```no_run
     /// # use fuels::prelude::*;
+    /// # use fuels::types::Bits256;
     /// # tokio_test::block_on(async {
     /// # let instance: orao_fuel_vrf::Vrf = panic!();
     ///
@@ -69,13 +79,69 @@ impl Vrf {
     /// };
     ///
     /// instance.request(Bits256([1_u8; 32]))
-    ///     .call_params(CallParameters::new(Some(fee), Some(asset), None))
+    ///     .call_params(CallParameters::default().set_amount(fee).set_asset_id(asset))?
     ///     .call()
     ///     .await?;
     /// # orao_fuel_vrf::Result::Ok(()) });
     /// ```
     pub fn request(&self, seed: Bits256) -> ContractCallHandler<u64> {
         self.methods.request(seed)
+    }
+
+    pub async fn request_and_await(
+        &self,
+        seed: Bits256,
+        fee: u64,
+        tx_params: Option<TxParameters>,
+    ) -> Result<FuelCallResponse<u64>> {
+        let mut call = self.methods.request(seed);
+        if let Some(params) = tx_params {
+            call = call.tx_params(params);
+        }
+        let call = call.call_params(CallParameters::default().set_amount(fee))?;
+        self.call_and_await(call).await
+    }
+
+    // Workaround for FuelLabs/fuel-core#1076
+    async fn call_and_await<T>(&self, call: ContractCallHandler<T>) -> Result<FuelCallResponse<T>>
+    where
+        T: Tokenizable,
+        T: Debug,
+    {
+        let tx = call.build_tx().await?;
+        let wallet = self.abi.wallet();
+        let provider = wallet.get_provider()?;
+        let mut receipts = provider.send_transaction(&tx).await?;
+
+        if receipts.is_empty() {
+            // see FuelLabs/fuel-core#1076
+            let tx_id = tx.id().to_string();
+            let mut attempts = 5;
+            while attempts > 0 {
+                tokio::time::sleep(Duration::from_secs(1)).await;
+                receipts = provider.client.receipts(&tx_id).await?;
+                if !receipts.is_empty() {
+                    break;
+                }
+                attempts -= 1;
+            }
+        }
+
+        Ok(call.get_response(receipts)?)
+    }
+
+    /// Returns the configured authority.
+    ///
+    /// # Note
+    ///
+    /// `None` means that the contract instance is not yet configured.
+    pub async fn get_authority(&self) -> Result<Option<Identity>> {
+        let authority = self.methods.get_authority().simulate().await?.value;
+        if authority != Identity::Address(Address::zeroed()) {
+            Ok(Some(authority))
+        } else {
+            Ok(None)
+        }
     }
 
     /// Returns the configured fee for the given asset.
@@ -130,13 +196,140 @@ impl Vrf {
         Ok(self.methods.get_num_requests().simulate().await?.value)
     }
 
-    /// Extracts logs of the given type from the set of receipts.
-    pub fn logs_with_type<D: Tokenizable + Parameterize>(
-        &self,
-        receipts: &[Receipt],
-    ) -> Result<Vec<D>> {
-        Ok(self.abi.logs_with_type(receipts)?)
+    /// Convenience method that returns on-chain VRF status.
+    // TODO: Clean this up as soon as FuelLabs/fuels-rs#914 is fixed
+    pub async fn get_status(&self) -> Result<Status> {
+        let mut call = MultiContractCallHandler::new(self.abi.wallet());
+        call.add_call(self.methods.get_authority())
+            .add_call(self.methods.get_balance(ContractId::new(*AssetId::BASE)))
+            .add_call(self.methods.get_fee(ContractId::new(*AssetId::BASE)))
+            .add_call(self.methods.get_asset())
+            .add_call(self.methods.get_fulfillment_authorities())
+            .add_call(self.methods.get_num_requests())
+            .tx_params(
+                TxParameters::default()
+                    .set_gas_price(1)
+                    .set_gas_limit(10_000_000),
+            );
+
+        let tx = fuels::tx::Transaction::Script(call.build_tx().await.unwrap().tx);
+
+        let mut receipts = self
+            .abi
+            .wallet()
+            .get_provider()?
+            .client
+            .dry_run_opt(&tx, Some(false))
+            .await
+            .unwrap()
+            .into_iter();
+
+        /// Helper, that extracts next call receipts.
+        fn next_receipts(i: &mut impl Iterator<Item = Receipt>) -> Vec<Receipt> {
+            let mut receipts = i
+                .by_ref()
+                .enumerate()
+                .take_while(|(i, x)| *i == 0 || !matches!(x, Receipt::Call { .. }))
+                .map(|(_, x)| x)
+                .collect::<Vec<_>>();
+            receipts.push(Receipt::ScriptResult {
+                result: ScriptExecutionResult::Success,
+                gas_used: 0,
+            });
+            receipts
+        }
+
+        let authority = self
+            .methods
+            .get_authority()
+            .get_response(next_receipts(&mut receipts))?
+            .value;
+        let balance = self
+            .methods
+            .get_balance(ContractId::new(*AssetId::BASE))
+            .get_response(next_receipts(&mut receipts))?
+            .value;
+        let fee = self
+            .methods
+            .get_fee(ContractId::new(*AssetId::BASE))
+            .get_response(next_receipts(&mut receipts))?
+            .value;
+        let asset = self
+            .methods
+            .get_asset()
+            .get_response(next_receipts(&mut receipts))?
+            .value;
+        let fulfillment_authorities = self
+            .methods
+            .get_fulfillment_authorities()
+            .get_response(next_receipts(&mut receipts))?
+            .value;
+        let num_requests = self
+            .methods
+            .get_num_requests()
+            .get_response(next_receipts(&mut receipts))?
+            .value;
+
+        let additional_asset = if *asset != *AssetId::BASE {
+            let mut call = MultiContractCallHandler::new(self.abi.wallet());
+            call.add_call(self.methods.get_balance(asset))
+                .add_call(self.methods.get_fee(asset));
+            let tx = fuels::tx::Transaction::Script(call.build_tx().await.unwrap().tx);
+            let mut receipts = self
+                .abi
+                .wallet()
+                .get_provider()?
+                .client
+                .dry_run_opt(&tx, Some(false))
+                .await
+                .unwrap()
+                .into_iter();
+            let balance = self
+                .methods
+                .get_balance(ContractId::new(*AssetId::BASE))
+                .get_response(next_receipts(&mut receipts))?
+                .value;
+            let fee = self
+                .methods
+                .get_fee(ContractId::new(*AssetId::BASE))
+                .get_response(next_receipts(&mut receipts))?
+                .value;
+            Some((AssetId::new(*asset), AssetStatus { fee, balance }))
+        } else {
+            None
+        };
+
+        Ok(Status {
+            authority: if authority != Identity::Address(Address::zeroed()) {
+                Some(authority)
+            } else {
+                None
+            },
+            num_requests,
+            base_asset: AssetStatus { fee, balance },
+            fulfillment_authorities: fulfillment_authorities
+                .into_iter()
+                .filter_map(identity)
+                .collect(),
+            additional_asset,
+        })
     }
+}
+
+/// Structure that represents on-chain VRF state.
+#[derive(Debug, Clone)]
+pub struct Status {
+    pub authority: Option<Identity>,
+    pub num_requests: u64,
+    pub base_asset: AssetStatus,
+    pub fulfillment_authorities: Vec<Address>,
+    pub additional_asset: Option<(AssetId, AssetStatus)>,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct AssetStatus {
+    pub fee: u64,
+    pub balance: u64,
 }
 
 pub fn signature_to_parts(s: Signature) -> (Bits256, Bits256) {

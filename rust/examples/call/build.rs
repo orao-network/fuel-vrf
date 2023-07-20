@@ -18,7 +18,7 @@ fn main() {
     };
     std::fs::write(
         &dest_path,
-        format!(r#"fuels::prelude::abigen!(RussianRoulette, "{contract_abi_path}");"#),
+        format!(r#"fuels::prelude::abigen!(Contract(name = "RussianRoulette", abi="{contract_abi_path}"));"#),
     )
     .unwrap();
 

@@ -1,7 +1,8 @@
 use std::time::Duration;
 
 use clap::Parser;
-use fuel_crypto::fuel_types::{Bytes32};
+use fuel_crypto::fuel_types::Bytes32;
+use fuels::types::Bits256;
 use fuels::prelude::*;
 use indicatif::ProgressBar;
 use orao_fuel_vrf::{Event, Fulfilled, RandomnessState, Vrf, randomness_to_bytes64};
@@ -29,7 +30,7 @@ pub struct Args {
     pub account_index: usize,
 
     /// Fuel node endpoint to connect to.
-    #[arg(long, default_value = "http://node-beta-2.fuel.network/graphql")]
+    #[arg(long, default_value = "https://beta-3.fuel.network/graphql")]
     pub endpoint: String,
 
     /// Request seed.
@@ -77,13 +78,13 @@ async fn main() -> anyhow::Result<()> {
     progress.set_message("Requesting randomness..");
     let response = instance
         .request(Bits256(*seed))
-        .tx_params(TxParameters::new(Some(1), None, None))
-        .call_params(CallParameters::new(Some(fee), None, None))
+        .tx_params(TxParameters::default().set_gas_price(1))
+        .call_params(CallParameters::default().set_amount(fee))?
         .call()
         .await?;
     progress.suspend(|| {
-        let events = instance
-            .logs_with_type::<Event>(&response.receipts)
+        let events = response
+            .get_logs_with_type::<Event>()
             .expect("being able to parse logs");
         for event in events {
             println!("{event}");

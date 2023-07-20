@@ -18,7 +18,7 @@ fn main() {
     println!("cargo:rerun-if-changed={manifest_dir}/abi.json");
     write(
         &dest_path,
-        format!(r#"fuels::prelude::abigen!(Vrf, "{contract_abi_path}");"#),
+        format!(r#"fuels::prelude::abigen!(Contract(name="Vrf", abi="{contract_abi_path}"));"#),
     )
     .unwrap();
 }

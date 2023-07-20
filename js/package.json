@@ -1,20 +1,44 @@
 {
   "name": "@orao-network/fuel-vrf",
-  "version": "0.1.2",
-  "description": "VRF SDK for the Fuel Network",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "version": "0.1.3",
+  "description": "ORAO VRF SDK Verifiable Random Function for the Fuel Network",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist",
+    "src/**/*.d.ts"
+  ],
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run build && npx jest"
   },
   "author": "ORAO Network Developers <hello@orao.network>",
   "license": "ISC",
   "dependencies": {
-    "fuels": "^0.29.0",
-    "tsup": "^6.4.0"
+    "fuels": "^0.40"
   },
   "devDependencies": {
-    "typescript": "^4.8.4"
-  }
+    "@jest/globals": "^29.6.1",
+    "ts-jest": "^29.1.1",
+    "typescript": "^4.9.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orao-network/fuel-vrf.git"
+  },
+  "keywords": [
+    "vrf",
+    "randomizer",
+    "rng",
+    "fuel",
+    "fuel-nft",
+    "on-chain",
+    "random",
+    "number",
+    "generator"
+  ],
+  "bugs": {
+    "url": "https://github.com/orao-network/fuel-vrf/issues"
+  },
+  "homepage": "https://github.com/orao-network/fuel-vrf#readme"
 }

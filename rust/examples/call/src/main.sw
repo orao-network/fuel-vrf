@@ -1,6 +1,6 @@
 contract;
 
-dep error;
+mod error;
 
 use std::{
     auth::msg_sender,
@@ -21,12 +21,13 @@ use std::{
 
 use vrf_abi::{randomness::{Fulfilled, Randomness, RandomnessState}, Vrf};
 
-const VRF_ID = 0x11aadad33b006b21390e1452cd6354b6aa71bfd997ce0977936eb60637a96a0e;
+const VRF_ID = 0xc970d8b5495e76ee1858827e540bce5e578b6c7a6501bd67d5712f966b3ea400;
 
 abi RussianRoulette {
     fn round_cost() -> u64;
     #[storage(read)]
     fn status() -> Status;
+    #[payable]
     #[storage(read, write)]
     fn spin_and_pull_the_trigger(force: b256);
 }
@@ -114,10 +115,18 @@ impl RussianRoulette for Contract {
     #[storage(read)]
     fn status() -> Status {
         let sender = msg_sender().unwrap();
-        let player = storage.player_state.get(sender);
+        let player = match storage.player_state.get(sender) {
+            Option::Some(player) => player,
+            Option::None => PlayerState {
+                player: sender,
+                force: ZERO_B256,
+                rounds: 0,
+            },
+        };
         player.get_status()
     }
 
+    #[payable]
     #[storage(read, write)]
     fn spin_and_pull_the_trigger(force: b256) {
         let sender = msg_sender().unwrap();
@@ -129,8 +138,19 @@ impl RussianRoulette for Contract {
             revert(2);
         }
 
-        let mut player = storage.player_state.get(sender);
-        player.assert_can_play();
+        let mut player = match storage.player_state.get(sender) {
+            Option::Some(player) => player,
+            Option::None => PlayerState {
+                player: sender,
+                force,
+                rounds: 0,
+            },
+        };
+
+        player.force = force;
+        player.rounds += 1;
+
+        storage.player_state.insert(sender, player);
 
         let vrf = abi(Vrf, VRF_ID);
 
@@ -145,10 +165,5 @@ impl RussianRoulette for Contract {
             asset_id: BASE_ASSET_ID.value,
             coins: fee,
         }(force);
-
-        player.force = force;
-        player.rounds += 1;
-
-        storage.player_state.insert(sender, player);
     }
 }

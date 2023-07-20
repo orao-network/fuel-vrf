@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use fuel_crypto::SecretKey;
+use fuels::signers::fuel_crypto::SecretKey;
 
 pub fn derive_account_with_index(
     password: &str,

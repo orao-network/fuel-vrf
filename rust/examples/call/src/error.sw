@@ -1,4 +1,4 @@
-library error;
+library;
 
 pub enum Error {
     PlayerIsDead: (),
