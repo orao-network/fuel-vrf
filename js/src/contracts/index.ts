@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.40.0
-  Forc version: 0.35.5
-  Fuel-Core version: 0.17.3
+  Fuels version: 0.77.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 export type { VrfImplAbi } from './VrfImplAbi';

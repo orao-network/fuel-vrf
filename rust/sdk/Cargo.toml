@@ -10,6 +10,7 @@ edition.workspace = true
 fuels.workspace = true
 thiserror = "1"
 tokio = { version = "1.15", features = ["rt", "macros"] }
+fuel-types = { version = "0.47.1" }
 
 [dev-dependencies]
 tokio-test = "0.4.2"

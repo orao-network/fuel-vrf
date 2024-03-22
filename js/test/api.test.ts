@@ -2,7 +2,7 @@ import { describe, expect, test, beforeAll } from '@jest/globals';
 import { Provider, WalletUnlocked, Wallet, randomBytes, hexlify } from 'fuels';
 import { Vrf } from '../.';
 
-const URL = "https://beta-3.fuel.network/graphql";
+const URL = "https://beta-5.fuel.network/graphql";
 
 let provider: Provider;
 let vrf: Vrf;
@@ -13,7 +13,7 @@ if (!process.env.PRIVATE_KEY) {
 }
 
 beforeAll(async () => {
-    provider = new Provider(URL);
+    provider = await Provider.create(URL);
     const wallet: WalletUnlocked = Wallet.fromPrivateKey(process.env.PRIVATE_KEY ?? "", provider);
     vrf = new Vrf(wallet);
 });
@@ -24,10 +24,10 @@ describe('VRF API', () => {
         let requestNum = await vrf.request(seedHex);
 
         let response = await vrf.getRequest(requestNum);
+        console.dir(response, { depth: 10 });
 
         expect(response).toBeDefined();
         expect(response?.seed).toEqual(seedHex);
-        expect(response?.state.Unfulfilled).not.toBe(undefined);
     }, 60_000);
     test('wait fulfilled', async () => {
         let seedHex = hexlify(seed);

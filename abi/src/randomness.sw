@@ -9,11 +9,11 @@ use std::option::Option;
 use std::logging::log;
 
 /// Must be a quorum requirement for `MAX_AUTHORITIES`.
-pub const MAX_FULFILLERS: u8 = 7;
+pub const MAX_FULFILLERS: u64 = 7;
 
 /// List of fulfiller's keys (`Address::zeroed()`-terminated).
 pub struct FulfillersKeys {
-    keys: [Address; 7] /* TODO: can't specify a constant here */ ,
+    keys: [Address; 7 /* TODO: can't specify a constant here */],
 }
 
 impl FulfillersKeys {
@@ -35,18 +35,18 @@ impl FulfillersKeys {
     /// Puts another fulfiller's key into the list.
     ///
     /// Returns the updated len. Returns None if this authority is present.
-    pub fn put(ref mut self, authority: Address) -> Option<u8> {
+    pub fn put(ref mut self, authority: Address) -> Option<u64> {
         let mut keys = self.keys;
-        let mut i: u8 = 0;
+        let mut i: u64 = 0;
         while i < MAX_FULFILLERS {
             if keys[i].value == ZERO_B256 {
                 keys[i] = authority;
                 self.keys = keys;
-                return Option::Some(i + 1_u8);
+                return Option::Some(i + 1_u64);
             } else if keys[i] == authority {
                 return Option::None;
             }
-            i += 1_u8;
+            i += 1_u64;
         }
 
         // Must not reach this, because the quorum is ether achieved
@@ -96,11 +96,11 @@ pub struct Randomness {
 }
 
 impl Randomness {
-    /// Creates new unfulfilled randomness for the given seed.
+    /// Creates new unfulfille randomness for the given seed.
     pub fn new(seed: b256) -> Randomness {
         Randomness {
             seed,
-            state: RandomnessState::Unfulfilled(Unfulfilled::new()),
+            state: RandomnessState::Unfulfilled(Unfulfilled::new())
         }
     }
 }
@@ -109,7 +109,7 @@ impl Unfulfilled {
     /// Adds another response to this unfulfilled randomness.
     ///
     /// Returns new number of responses. Returns `None` if authority is already present.
-    pub fn fulfill(ref mut self, authority: Address, randomness: B512) -> Option<u8> {
+    pub fn fulfill(ref mut self, authority: Address, randomness: B512) -> Option<u64> {
         let num_responses = match self.keys.put(authority) {
             Option::Some(n) => n,
             Option::None => return Option::None,

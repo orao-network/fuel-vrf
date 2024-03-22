@@ -35,7 +35,7 @@ pub struct Args {
     pub account_index: usize,
 
     /// Fuel node endpoint to connect to.
-    #[arg(long, default_value = "https://beta-3.fuel.network/graphql")]
+    #[arg(long, default_value = "https://beta-5.fuel.network/graphql")]
     pub endpoint: String,
 }
 

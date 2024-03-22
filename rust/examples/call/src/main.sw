@@ -16,12 +16,13 @@ use std::{
     identity::Identity,
     logging::log,
     revert::revert,
-    storage::StorageMap,
+    storage::*,
 };
+use std::hash::Hash;
 
 use vrf_abi::{randomness::{Fulfilled, Randomness, RandomnessState}, Vrf};
 
-const VRF_ID = 0xc970d8b5495e76ee1858827e540bce5e578b6c7a6501bd67d5712f966b3ea400;
+const VRF_ID = 0xba359a2c9c75e51e04c14a9b7849c6fd76ead15ea4e68e623d75d1bed9d0dc4b;
 
 abi RussianRoulette {
     fn round_cost() -> u64;
@@ -115,7 +116,7 @@ impl RussianRoulette for Contract {
     #[storage(read)]
     fn status() -> Status {
         let sender = msg_sender().unwrap();
-        let player = match storage.player_state.get(sender) {
+        let player = match storage.player_state.get(sender).try_read() {
             Option::Some(player) => player,
             Option::None => PlayerState {
                 player: sender,
@@ -138,7 +139,7 @@ impl RussianRoulette for Contract {
             revert(2);
         }
 
-        let mut player = match storage.player_state.get(sender) {
+        let mut player = match storage.player_state.get(sender).try_read() {
             Option::Some(player) => player,
             Option::None => PlayerState {
                 player: sender,

@@ -1,5 +1,5 @@
 # Off-chain randomness
-This is a sample app that requests randomness off-chain from the ORAO VRF contrat on Fuel's beta-3 testnet.
+This is a sample app that requests randomness off-chain from the ORAO VRF contrat on Fuel's beta-5 testnet.
 
 ## Requirements
 

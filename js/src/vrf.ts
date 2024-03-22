@@ -4,7 +4,7 @@ import { Option } from "./contracts/common";
 import { ContractIdInput, IdentityOutput, RandomnessOutput } from "./contracts/VrfImplAbi";
 
 /** Deployed contract address */
-export const CONTRACT_ID = "0xc970d8b5495e76ee1858827e540bce5e578b6c7a6501bd67d5712f966b3ea400";
+export const CONTRACT_ID = "0xba359a2c9c75e51e04c14a9b7849c6fd76ead15ea4e68e623d75d1bed9d0dc4b";
 
 export class Vrf {
     protected abi: VrfImplAbi;
@@ -23,14 +23,14 @@ export class Vrf {
      * Returns the configured authority.
      */
     async getAuthority(): Promise<IdentityOutput> {
-        return (await this.abi.functions.get_authority().get()).value
+        return (await this.abi.functions.get_authority().dryRun()).value
     }
 
     /**
      * Returns contract balance for the given asset.
      */
     async getBalance(asset: B256Address | AbstractAddress): Promise<BN> {
-        return (await this.abi.functions.get_balance(toContractIdInput(asset)).get()).value;
+        return (await this.abi.functions.get_balance({value: asset.toString()}).dryRun()).value;
     }
 
     /**
@@ -39,14 +39,14 @@ export class Vrf {
      * Returns default asset if additional asset is not configured.
      */
     async getAsset(): Promise<B256Address> {
-        return (await this.abi.functions.get_asset().get()).value.value;
+        return ( (await this.abi.functions.get_asset().dryRun()).value ).value;
     }
 
     /**
      * Returns the configured fee for the given asset.
      */
     async getFee(asset: B256Address | AbstractAddress): Promise<BN> {
-        return (await this.abi.functions.get_fee(toContractIdInput(asset)).get()).value;
+        return (await this.abi.functions.get_fee({value: asset.toString()}).dryRun()).value;
     }
 
     /**
@@ -54,7 +54,7 @@ export class Vrf {
      */
     async getFulfillmentAuthorities(): Promise<B256Address[]> {
         const output = [];
-        for (let address of (await this.abi.functions.get_fulfillment_authorities().get()).value) {
+        for (let address of (await this.abi.functions.get_fulfillment_authorities().dryRun()).value) {
             let a = address;
             if (a) {
                 output.push(a.value);
@@ -67,7 +67,7 @@ export class Vrf {
      * Returns the number of received randomness requests.
      */
     async getNumRequests(): Promise<BN> {
-        return (await this.abi.functions.get_num_requests().get()).value;
+        return (await this.abi.functions.get_num_requests().dryRun()).value;
     }
 
     /**
@@ -75,9 +75,9 @@ export class Vrf {
      */
     async getRequest(seedHexOrNum: string | BigNumberish): Promise<Option<RandomnessOutput>> {
         if (typeof seedHexOrNum == "string") {
-            return (await this.abi.functions.get_request_by_seed(seedHexOrNum).get()).value;
+            return (await this.abi.functions.get_request_by_seed(seedHexOrNum).dryRun()).value;
         } else {
-            return (await this.abi.functions.get_request_by_num(seedHexOrNum).get()).value;
+            return (await this.abi.functions.get_request_by_num(seedHexOrNum).dryRun()).value;
         }
     }
 

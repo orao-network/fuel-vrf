@@ -1,7 +1,9 @@
 use fuels::{
-    prelude::{CallParameters, TxParameters},
+    prelude::{CallParameters, TxPolicies},
     types::Bits256,
 };
+
+use fuels::prelude::Account;
 
 pub mod bindings {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -17,14 +19,14 @@ impl bindings::Status {
     }
 }
 
-impl bindings::RussianRoulette {
+impl<T: Account> bindings::RussianRoulette<T> {
     /// Helper that calls `status` on a russian roulette instance.
     pub async fn status(&self) -> anyhow::Result<bindings::Status> {
         Ok(self
             .methods()
             .status()
             // this is necessary, because our contract calls VRF contract
-            .set_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
             .simulate()
             .await?
             .value)
@@ -32,14 +34,14 @@ impl bindings::RussianRoulette {
 
     /// Helper that calls `spin_and_pull_the_trigger` on a russian roulette instance.
     pub async fn spin_and_pull_the_trigger(&self) -> anyhow::Result<()> {
-        // using random "force"
+        // using random "force" - generates a boolean
         let force = rand::random();
 
         // we need to get the correct fee
         let fee = self
             .methods()
             .round_cost()
-            .set_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
             .simulate()
             .await?
             .value;
@@ -48,9 +50,9 @@ impl bindings::RussianRoulette {
 
         self.methods()
             .spin_and_pull_the_trigger(Bits256(force))
-            .tx_params(TxParameters::default().set_gas_price(1))
-            .call_params(CallParameters::default().set_amount(fee))?
-            .set_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .with_tx_policies(TxPolicies::default().with_gas_price(1))
+            .call_params(CallParameters::default().with_amount(fee))?
+            .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
             .call()
             .await?;
 

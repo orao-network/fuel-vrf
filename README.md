@@ -22,7 +22,7 @@ This will install the Fuel latest toolchain, forc-wallet, explorer cli tool and 
 
 
 3. Build the SDK
-Current version will build for Fuel's beta-3 testnet.
+Current version will build for Fuel's beta-5 testnet.
 This command will also build sample apps
 
 ```sh

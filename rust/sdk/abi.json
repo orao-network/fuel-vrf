@@ -475,7 +475,7 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 5,
           "typeArguments": null
         },
         {
@@ -534,7 +534,7 @@
       "name": "get_asset",
       "output": {
         "name": "",
-        "type": 16,
+        "type": 5,
         "typeArguments": null
       },
       "attributes": [
@@ -567,7 +567,7 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -590,7 +590,7 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -756,7 +756,7 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 5,
           "typeArguments": null
         },
         {

@@ -8,16 +8,14 @@ pub use abi::{
     randomness_to_bytes64,
 };
 use fuels::{
-    prelude::Transaction,
-    programs::{call_response::FuelCallResponse, contract::ContractCallHandler},
-    types::traits::Tokenizable,
-};
-use fuels::{
+    core::traits::{Parameterize, Tokenizable},
     prelude::*,
-    signers::fuel_crypto::Signature,
+    programs::{call_response::FuelCallResponse, contract::ContractCallHandler},
     tx::{Receipt, ScriptExecutionResult},
     types::{Bits256, Identity},
 };
+
+use fuels::crypto::Signature;
 
 pub use error::Error;
 
@@ -28,18 +26,18 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 pub const MAX_AUTHORITIES: usize = 10;
 pub const CONTRACT_ID: ContractId = ContractId::new([
-    0xc9, 0x70, 0xd8, 0xb5, 0x49, 0x5e, 0x76, 0xee, 0x18, 0x58, 0x82, 0x7e, 0x54, 0x0b, 0xce, 0x5e,
-    0x57, 0x8b, 0x6c, 0x7a, 0x65, 0x01, 0xbd, 0x67, 0xd5, 0x71, 0x2f, 0x96, 0x6b, 0x3e, 0xa4, 0x00,
+    0x63, 0x51, 0xc7, 0x37, 0x1c, 0x06, 0xc5, 0xac, 0xb6, 0xb1, 0x37, 0x84, 0xea, 0x15, 0x3c, 0x3e,
+    0x92, 0x92, 0x1f, 0x80, 0x30, 0x9a, 0xa3, 0xbd, 0x11, 0xd6, 0x89, 0xad, 0x4d, 0xe8, 0xed, 0xbf,
 ]);
 
 #[derive(Debug)]
-pub struct Vrf {
-    pub abi: abi::bindings::Vrf,
-    pub methods: abi::bindings::VrfMethods,
+pub struct Vrf<T: Account> {
+    pub abi: abi::bindings::Vrf<T>,
+    pub methods: abi::bindings::VrfMethods<T>,
 }
 
-impl Vrf {
-    pub fn new(contract_id: Bech32ContractId, wallet: WalletUnlocked) -> Self {
+impl<A: Account> Vrf<A> {
+    pub fn new(contract_id: Bech32ContractId, wallet: A) -> Self {
         let abi = abi::bindings::Vrf::new(contract_id, wallet);
         Self {
             methods: abi.methods(),
@@ -57,7 +55,7 @@ impl Vrf {
     /// # use fuels::prelude::*;
     /// # use fuels::types::Bits256;
     /// # tokio_test::block_on(async {
-    /// # let instance: orao_fuel_vrf::Vrf = panic!();
+    /// # let instance: orao_fuel_vrf::Vrf<WalletUnlocked> = panic!();
     ///
     /// // Let's try to pay with additional asset with fallback to the base asset
     /// let asset = instance.get_asset().await?;
@@ -79,12 +77,12 @@ impl Vrf {
     /// };
     ///
     /// instance.request(Bits256([1_u8; 32]))
-    ///     .call_params(CallParameters::default().set_amount(fee).set_asset_id(asset))?
+    ///     .call_params(CallParameters::default().with_amount(fee).with_asset_id(asset))?
     ///     .call()
     ///     .await?;
     /// # orao_fuel_vrf::Result::Ok(()) });
     /// ```
-    pub fn request(&self, seed: Bits256) -> ContractCallHandler<u64> {
+    pub fn request(&self, seed: Bits256) -> ContractCallHandler<A, u64> {
         self.methods.request(seed)
     }
 
@@ -92,38 +90,39 @@ impl Vrf {
         &self,
         seed: Bits256,
         fee: u64,
-        tx_params: Option<TxParameters>,
+        tx_policies: Option<TxPolicies>,
     ) -> Result<FuelCallResponse<u64>> {
         let mut call = self.methods.request(seed);
-        if let Some(params) = tx_params {
-            call = call.tx_params(params);
+        if let Some(policies) = tx_policies {
+            call = call.with_tx_policies(policies);
         }
-        let call = call.call_params(CallParameters::default().set_amount(fee))?;
+        let call = call.call_params(CallParameters::default().with_amount(fee))?;
         self.call_and_await(call).await
     }
 
     // Workaround for FuelLabs/fuel-core#1076
-    async fn call_and_await<T>(&self, call: ContractCallHandler<T>) -> Result<FuelCallResponse<T>>
+    async fn call_and_await<T>(
+        &self,
+        call: ContractCallHandler<A, T>,
+    ) -> Result<FuelCallResponse<T>>
     where
-        T: Tokenizable,
+        T: Tokenizable + Parameterize,
         T: Debug,
     {
         let tx = call.build_tx().await?;
-        let wallet = self.abi.wallet();
-        let provider = wallet.get_provider()?;
-        let mut receipts = provider.send_transaction(&tx).await?;
+        let wallet = self.abi.account();
+        let provider = wallet.try_provider()?;
+        let tx_id = provider.send_transaction(tx).await?;
 
-        if receipts.is_empty() {
-            // see FuelLabs/fuel-core#1076
-            let tx_id = tx.id().to_string();
-            let mut attempts = 5;
-            while attempts > 0 {
-                tokio::time::sleep(Duration::from_secs(1)).await;
-                receipts = provider.client.receipts(&tx_id).await?;
-                if !receipts.is_empty() {
-                    break;
-                }
-                attempts -= 1;
+        //let tx_id = self.try_provider()?.send_transaction(&tx).await?;
+
+        // see FuelLabs/fuel-core#1076
+        let mut receipts = vec![];
+        for _ in 0..5 {
+            tokio::time::sleep(Duration::from_secs(1)).await;
+            receipts = provider.tx_status(&tx_id).await.unwrap().take_receipts();
+            if !receipts.is_empty() {
+                break;
             }
         }
 
@@ -150,7 +149,7 @@ impl Vrf {
     pub async fn get_fee(&self, asset: AssetId) -> Result<u64> {
         Ok(self
             .methods
-            .get_fee(ContractId::new(*asset))
+            .get_fee(Bits256(*asset.clone()))
             .simulate()
             .await?
             .value)
@@ -161,7 +160,7 @@ impl Vrf {
     /// Not that it returns the base asset if additional asset is not configured.
     pub async fn get_asset(&self) -> Result<AssetId> {
         Ok(AssetId::new(
-            *self.methods.get_asset().simulate().await?.value,
+            self.methods.get_asset().simulate().await?.value.0,
         ))
     }
 
@@ -199,31 +198,28 @@ impl Vrf {
     /// Convenience method that returns on-chain VRF status.
     // TODO: Clean this up as soon as FuelLabs/fuels-rs#914 is fixed
     pub async fn get_status(&self) -> Result<Status> {
-        let mut call = MultiContractCallHandler::new(self.abi.wallet());
+        let mut call = MultiContractCallHandler::new(self.abi.account());
         call.add_call(self.methods.get_authority())
-            .add_call(self.methods.get_balance(ContractId::new(*AssetId::BASE)))
-            .add_call(self.methods.get_fee(ContractId::new(*AssetId::BASE)))
+            .add_call(self.methods.get_balance(Bits256(*AssetId::BASE.clone())))
+            .add_call(self.methods.get_fee(Bits256(*AssetId::BASE.clone())))
             .add_call(self.methods.get_asset())
             .add_call(self.methods.get_fulfillment_authorities())
-            .add_call(self.methods.get_num_requests())
-            .tx_params(
-                TxParameters::default()
-                    .set_gas_price(1)
-                    .set_gas_limit(10_000_000),
-            );
+            .add_call(self.methods.get_num_requests());
+        let policies = TxPolicies::default().with_gas_price(1).with_script_gas_limit(10_000_000);
+        call = call.with_tx_policies(policies);
 
-        let tx = fuels::tx::Transaction::Script(call.build_tx().await.unwrap().tx);
+        //let tx = fuels::tx::FuelTransaction::from(call.build_tx().await.unwrap());
+        let tx2 = call.build_tx().await.unwrap();
 
         let mut receipts = self
             .abi
-            .wallet()
-            .get_provider()?
-            .client
-            .dry_run_opt(&tx, Some(false))
+            .account()
+            .try_provider()?
+            .dry_run_no_validation(tx2)
             .await
             .unwrap()
             .into_iter();
-
+        
         /// Helper, that extracts next call receipts.
         fn next_receipts(i: &mut impl Iterator<Item = Receipt>) -> Vec<Receipt> {
             let mut receipts = i
@@ -246,12 +242,12 @@ impl Vrf {
             .value;
         let balance = self
             .methods
-            .get_balance(ContractId::new(*AssetId::BASE))
+            .get_balance(Bits256(*AssetId::BASE.clone()))
             .get_response(next_receipts(&mut receipts))?
             .value;
         let fee = self
             .methods
-            .get_fee(ContractId::new(*AssetId::BASE))
+            .get_fee(Bits256(*AssetId::BASE.clone()))
             .get_response(next_receipts(&mut receipts))?
             .value;
         let asset = self
@@ -270,31 +266,33 @@ impl Vrf {
             .get_response(next_receipts(&mut receipts))?
             .value;
 
-        let additional_asset = if *asset != *AssetId::BASE {
-            let mut call = MultiContractCallHandler::new(self.abi.wallet());
+        let additional_asset = if asset.0 != *AssetId::BASE {
+            let mut call = MultiContractCallHandler::new(self.abi.account());
             call.add_call(self.methods.get_balance(asset))
                 .add_call(self.methods.get_fee(asset));
-            let tx = fuels::tx::Transaction::Script(call.build_tx().await.unwrap().tx);
+            //let tx = fuels::tx::FuelTransaction::from(call.build_tx().await.unwrap());
+            let tx2 = call.build_tx().await.unwrap();
+
             let mut receipts = self
                 .abi
-                .wallet()
-                .get_provider()?
-                .client
-                .dry_run_opt(&tx, Some(false))
+                .account()
+                .try_provider()?
+                .dry_run_no_validation(tx2)
                 .await
                 .unwrap()
                 .into_iter();
+            
             let balance = self
                 .methods
-                .get_balance(ContractId::new(*AssetId::BASE))
+                .get_balance(Bits256(*AssetId::BASE.clone()))
                 .get_response(next_receipts(&mut receipts))?
                 .value;
             let fee = self
                 .methods
-                .get_fee(ContractId::new(*AssetId::BASE))
+                .get_fee(Bits256(*AssetId::BASE.clone()))
                 .get_response(next_receipts(&mut receipts))?
                 .value;
-            Some((AssetId::new(*asset), AssetStatus { fee, balance }))
+            Some((AssetId::new(asset.0), AssetStatus { fee, balance }))
         } else {
             None
         };

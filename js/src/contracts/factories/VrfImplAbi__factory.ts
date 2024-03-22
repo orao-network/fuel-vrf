@@ -4,13 +4,13 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.40.0
-  Forc version: 0.35.5
-  Fuel-Core version: 0.17.3
+  Fuels version: 0.77.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
-import { Interface, Contract } from "fuels";
-import type { Provider, Account, AbstractAddress } from "fuels";
+import { Interface, Contract, ContractFactory } from "fuels";
+import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot } from "fuels";
 import type { VrfImplAbi, VrfImplAbiInterface } from "../VrfImplAbi";
 
 const _abi = {
@@ -31,7 +31,7 @@ const _abi = {
           "typeArguments": [
             {
               "name": "",
-              "type": 14,
+              "type": 13,
               "typeArguments": null
             }
           ]
@@ -75,7 +75,7 @@ const _abi = {
       "components": [
         {
           "name": "__array_element",
-          "type": 14,
+          "type": 13,
           "typeArguments": null
         }
       ],
@@ -207,7 +207,7 @@ const _abi = {
       "components": [
         {
           "name": "Address",
-          "type": 14,
+          "type": 13,
           "typeArguments": null
         },
         {
@@ -262,19 +262,25 @@ const _abi = {
     },
     {
       "typeId": 12,
-      "type": "str[16]",
+      "type": "str",
       "components": null,
       "typeParameters": null
     },
     {
       "typeId": 13,
-      "type": "str[17]",
-      "components": null,
+      "type": "struct Address",
+      "components": [
+        {
+          "name": "value",
+          "type": 5,
+          "typeArguments": null
+        }
+      ],
       "typeParameters": null
     },
     {
       "typeId": 14,
-      "type": "struct Address",
+      "type": "struct AssetId",
       "components": [
         {
           "name": "value",
@@ -416,7 +422,7 @@ const _abi = {
         },
         {
           "name": "authority",
-          "type": 14,
+          "type": 13,
           "typeArguments": null
         },
         {
@@ -490,7 +496,7 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 14,
           "typeArguments": null
         },
         {
@@ -549,7 +555,7 @@ const _abi = {
       "name": "get_asset",
       "output": {
         "name": "",
-        "type": 16,
+        "type": 14,
         "typeArguments": null
       },
       "attributes": [
@@ -582,7 +588,7 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 14,
           "typeArguments": null
         }
       ],
@@ -605,7 +611,7 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 14,
           "typeArguments": null
         }
       ],
@@ -771,7 +777,7 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 16,
+          "type": 14,
           "typeArguments": null
         },
         {
@@ -781,7 +787,7 @@ const _abi = {
         },
         {
           "name": "recipient_address",
-          "type": 14,
+          "type": 13,
           "typeArguments": null
         }
       ],
@@ -895,7 +901,7 @@ const _abi = {
       "logId": 11,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -903,15 +909,15 @@ const _abi = {
       "logId": 12,
       "loggedType": {
         "name": "",
-        "type": 6,
-        "typeArguments": []
+        "type": 12,
+        "typeArguments": null
       }
     },
     {
       "logId": 13,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -919,15 +925,15 @@ const _abi = {
       "logId": 14,
       "loggedType": {
         "name": "",
-        "type": 12,
-        "typeArguments": null
+        "type": 7,
+        "typeArguments": []
       }
     },
     {
       "logId": 15,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -935,15 +941,15 @@ const _abi = {
       "logId": 16,
       "loggedType": {
         "name": "",
-        "type": 6,
-        "typeArguments": []
+        "type": 12,
+        "typeArguments": null
       }
     },
     {
       "logId": 17,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -951,7 +957,7 @@ const _abi = {
       "logId": 18,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -959,16 +965,16 @@ const _abi = {
       "logId": 19,
       "loggedType": {
         "name": "",
-        "type": 13,
-        "typeArguments": null
+        "type": 6,
+        "typeArguments": []
       }
     },
     {
       "logId": 20,
       "loggedType": {
         "name": "",
-        "type": 13,
-        "typeArguments": null
+        "type": 6,
+        "typeArguments": []
       }
     },
     {
@@ -991,7 +997,7 @@ const _abi = {
       "logId": 23,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -1023,38 +1029,6 @@ const _abi = {
       "logId": 27,
       "loggedType": {
         "name": "",
-        "type": 7,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 28,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 29,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 30,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 31,
-      "loggedType": {
-        "name": "",
         "type": 6,
         "typeArguments": []
       }
@@ -1062,17 +1036,57 @@ const _abi = {
   ],
   "messagesTypes": [],
   "configurables": []
-}
+};
+
+const _storageSlots: StorageSlot[] = [
+  {
+    "key": "7f91d1a929dce734e7f930bbb279ccfccdb5474227502ea8845815c74bd930a7",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "key": "b48b753af346966d0d169c0b2e3234611f65d5cfdb57c7b6e7cd6ca93707bee0",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ed",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ee",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+];
 
 export class VrfImplAbi__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
+
+  static readonly storageSlots = _storageSlots;
+
   static createInterface(): VrfImplAbiInterface {
     return new Interface(_abi) as unknown as VrfImplAbiInterface
   }
+
   static connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
   ): VrfImplAbi {
     return new Contract(id, _abi, accountOrProvider) as unknown as VrfImplAbi
+  }
+
+  static async deployContract(
+    bytecode: BytesLike,
+    wallet: Account,
+    options: DeployContractOptions = {}
+  ): Promise<VrfImplAbi> {
+    const factory = new ContractFactory(bytecode, _abi, wallet);
+
+    const { storageSlots } = VrfImplAbi__factory;
+
+    const contract = await factory.deployContract({
+      storageSlots,
+      ...options,
+    });
+
+    return contract as unknown as VrfImplAbi;
   }
 }

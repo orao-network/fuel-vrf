@@ -1,7 +1,8 @@
 library;
 
-mod randomness;
+pub mod randomness;
 
+//use std::asset::*;
 use std::address::Address;
 use std::identity::Identity;
 use std::b512::B512;
@@ -11,10 +12,10 @@ use randomness::Randomness;
 
 abi Vrf {
     #[storage(read)]
-    fn get_asset() -> ContractId;
+    fn get_asset() -> AssetId;
 
     #[storage(read)]
-    fn get_fee(asset: ContractId) -> u64;
+    fn get_fee(asset: AssetId) -> u64;
 
     #[storage(read)]
     fn get_fulfillment_authorities() -> [Option<Address>; 10];

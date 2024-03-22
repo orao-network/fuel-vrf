@@ -1,11 +1,13 @@
 use std::fmt;
 
 use fuels::{
-    core::abi_encoder::ABIEncoder,
+    core::{codec::ABIEncoder, traits::Tokenizable},
     prelude::*,
-    tx::{Address, Bytes32, Bytes64},
-    types::{traits::Tokenizable, Bits256, Identity, B512},
+    tx::Bytes32,
+    types::{Bits256, Identity, B512},
 };
+
+use fuel_types::Bytes64;
 
 pub mod bindings {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -38,7 +40,7 @@ impl fmt::Display for bindings::Error {
     }
 }
 
-impl fmt::Debug for bindings::Vrf {
+impl<T: Account> fmt::Debug for bindings::Vrf<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Vrf")
             .field("contract_id", self.contract_id())
@@ -46,7 +48,7 @@ impl fmt::Debug for bindings::Vrf {
     }
 }
 
-impl fmt::Debug for bindings::VrfMethods {
+impl<T: Account> fmt::Debug for bindings::VrfMethods<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("VrfMethods").finish_non_exhaustive()
     }

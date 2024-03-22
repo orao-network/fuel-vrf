@@ -2,15 +2,26 @@
 members = ["rust/sdk", "rust/examples/off-chain", "rust/examples/call"]
 
 [workspace.package]
-version = "0.1.3"
+version = "0.1.5"
 authors = ["ORAO Network Developers <hello@orao.network>"]
 repository = "https://github.com/orao-network/fuel-vrf"
 rust-version = "1.65"
 edition = "2021"
-keywords = ["vrf", "ed25519", "fuel", "fuel-nft", "randomizer", "on-chain", "random", "number", "generator", "sway"]
+keywords = [
+    "vrf",
+    "ed25519",
+    "fuel",
+    "fuel-nft",
+    "randomizer",
+    "on-chain",
+    "random",
+    "number",
+    "generator",
+    "sway",
+]
 description = "ORAO Verifiable Random Function for Fuel Network."
 
 [workspace.dependencies]
-fuels = { version = "0.38.1", features = ["fuel-core-lib"] }
-fuels-core = "0.38.1"
-fuel-crypto = "0.29.0"
+fuels = { version = "0.55", features = ["fuel-core-lib"] }
+fuels-core = "0.55"
+fuel-crypto = "0.47.1"
