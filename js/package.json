@@ -1,6 +1,6 @@
 {
   "name": "@orao-network/fuel-vrf",
-  "version": "0.1.5.1",
+  "version": "0.1.6",
   "description": "ORAO VRF SDK Verifiable Random Function for the Fuel Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
