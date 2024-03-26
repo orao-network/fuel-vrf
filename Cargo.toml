@@ -2,7 +2,7 @@
 members = ["rust/sdk", "rust/examples/off-chain", "rust/examples/call"]
 
 [workspace.package]
-version = "0.1.5"
+version = "0.1.5.1"
 authors = ["ORAO Network Developers <hello@orao.network>"]
 repository = "https://github.com/orao-network/fuel-vrf"
 rust-version = "1.65"
