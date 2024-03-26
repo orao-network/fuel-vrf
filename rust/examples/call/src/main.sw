@@ -162,7 +162,7 @@ impl RussianRoulette for Contract {
         }
 
         let _ = vrf.request {
-            gas: 300000,
+            gas: 1_000_000,
             asset_id: BASE_ASSET_ID.value,
             coins: fee,
         }(force);
