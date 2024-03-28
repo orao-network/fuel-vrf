@@ -1,3 +1,18 @@
+<h1 align="center">
+  ORAO FUEL VRF
+</h1>
+
+<p>
+  Generate on-chain randomness on Fuel. ORAO's Verifiable Random Function for Fuel offers unbiased, fast and affordable randomness for your Fuel programs. Create unique NFT characteristics, generate random levels for games, generates random weapons, random events in game, execute random reward distribution, randomize airdrops and provide secure, verifiable lottery/raffle.
+</p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@orao-network/fuel-vrf"><img src="https://img.shields.io/npm/v/%40orao-network%2Ffuel-vrf?logo=fueler&logoColor=white&color=blue" /></a> 
+  <a href="https://crates.io/crates/orao-fuel-vrf"><img src="https://img.shields.io/crates/v/orao-fuel-vrf?logo=codeium&color=%2308B1AB" /></a>
+</p>
+
+
+
+
 # ORAO VRF SDK for Fuel blockchain
 
 ## Building
