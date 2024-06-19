@@ -1,13 +1,10 @@
 use std::fmt;
 
+use fuel_types::{Bytes32, Bytes64};
 use fuels::{
-    core::{codec::ABIEncoder, traits::Tokenizable},
     prelude::*,
-    tx::Bytes32,
     types::{Bits256, Identity, B512},
 };
-
-use fuel_types::Bytes64;
 
 pub mod bindings {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -23,7 +20,7 @@ impl fmt::Display for bindings::Error {
             crate::ContractError::RemainingAssets => {
                 "withdraw asset fees before changing the asset"
             }
-            crate::ContractError::NonZeroFee => "set fee to 0 when disabing the asset",
+            crate::ContractError::NonZeroFee => "set fee to 0 when disabling the asset",
             crate::ContractError::ZeroAuthority => "zero authority is not allowed",
             crate::ContractError::ZeroFee => "zero fee is not allowed",
             crate::ContractError::NoFeePaid => "client must pay the fee",
@@ -37,14 +34,6 @@ impl fmt::Display for bindings::Error {
             crate::ContractError::Fulfilled => "request is fulfilled",
         };
         f.write_str(msg)
-    }
-}
-
-impl<T: Account> fmt::Debug for bindings::Vrf<T> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Vrf")
-            .field("contract_id", self.contract_id())
-            .finish_non_exhaustive()
     }
 }
 
@@ -123,7 +112,7 @@ impl fmt::Display for bindings::Reset {
 impl bindings::FulfillersKeys {
     pub fn is_empty(&self) -> bool {
         self.keys
-            .get(0)
+            .first()
             .map(|x| *x == Address::zeroed())
             .unwrap_or(true)
     }
@@ -163,8 +152,8 @@ impl<'a> Iterator for FulfillersKeysIter<'a> {
 }
 
 pub fn randomness_to_bytes64(randomness: B512) -> Bytes64 {
-    let rnd = ABIEncoder::encode(&[randomness.into_token()])
-        .unwrap()
-        .resolve(0);
-    Bytes64::try_from(&*rnd).expect("64 bytes to equal 512 bits")
+    let mut bytes = [0_u8; 64];
+    bytes[..32].copy_from_slice(&randomness.bytes[0].0);
+    bytes[32..].copy_from_slice(&randomness.bytes[1].0);
+    Bytes64::new(bytes)
 }

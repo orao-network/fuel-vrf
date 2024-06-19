@@ -32,7 +32,7 @@ pub struct Args {
     pub account_index: usize,
 
     /// Fuel node endpoint to connect to.
-    #[arg(long, default_value = "https://beta-5.fuel.network/graphql")]
+    #[arg(long, default_value = "https://testnet.fuel.network/graphql")]
     pub endpoint: String,
 
     /// Request seed.
@@ -72,16 +72,20 @@ async fn main() -> anyhow::Result<()> {
     eprintln!("Using contract address: {}\n", args.contract_id);
 
     let instance = Vrf::new(bech32_contract_id, wallet);
+    let base_asset = instance.get_network_base_asset();
 
     let seed = args.seed.unwrap_or_else(|| rand::random());
-    let fee = instance.get_fee(AssetId::BASE).await?;
+
+    println!("Using seed: {}", Bytes32::new(*seed));
+
+    let fee = instance.get_fee(base_asset).await?;
     let progress = ProgressBar::new_spinner();
     progress.enable_steady_tick(std::time::Duration::from_millis(120));
     progress.set_message("Requesting randomness..");
     let response = instance
         .request(Bits256(*seed))
-        .with_tx_policies(TxPolicies::default().with_gas_price(1))
-        .call_params(CallParameters::default().with_amount(fee))?
+        .with_tx_policies(TxPolicies::default())
+        .call_params(CallParameters::default().with_amount(fee).with_asset_id(base_asset))?
         .call()
         .await?;
     progress.suspend(|| {

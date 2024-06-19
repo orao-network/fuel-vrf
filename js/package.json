@@ -1,6 +1,6 @@
 {
   "name": "@orao-network/fuel-vrf",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "ORAO VRF SDK Verifiable Random Function for the Fuel Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,12 +15,12 @@
   "author": "ORAO Network Developers <hello@orao.network>",
   "license": "ISC",
   "dependencies": {
-    "fuels": "^0.77"
+    "fuels": "^0.89.2"
   },
   "devDependencies": {
-    "@jest/globals": "^29.6.1",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.4.3"
+    "@jest/globals": "^29.7.0",
+    "ts-jest": "^29.1.5",
+    "typescript": "^5.4.5"
   },
   "repository": {
     "type": "git",

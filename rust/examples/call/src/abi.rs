@@ -50,7 +50,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
 
         self.methods()
             .spin_and_pull_the_trigger(Bits256(force))
-            .with_tx_policies(TxPolicies::default().with_gas_price(1))
+            .with_tx_policies(TxPolicies::default())
             .call_params(CallParameters::default().with_amount(fee))?
             .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
             .call()

@@ -6,4 +6,3 @@ name = "russian-roulette"
 
 [dependencies]
 vrf_abi = { path = "../../../abi" }
-std = { git = "https://github.com/FuelLabs/sway", tag = "v0.49.3" }

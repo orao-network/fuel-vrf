@@ -2,18 +2,19 @@ library;
 
 use std::address::Address;
 use std::b512::B512;
-use std::constants::{BASE_ASSET_ID, ZERO_B256};
+use std::constants::ZERO_B256;
 use std::error_signals::FAILED_REQUIRE_SIGNAL;
 use std::revert::{require, revert};
 use std::option::Option;
 use std::logging::log;
+use std::convert::{From, Into};
 
 /// Must be a quorum requirement for `MAX_AUTHORITIES`.
 pub const MAX_FULFILLERS: u64 = 7;
 
 /// List of fulfiller's keys (`Address::zeroed()`-terminated).
 pub struct FulfillersKeys {
-    keys: [Address; 7 /* TODO: can't specify a constant here */],
+    pub keys: [Address; 7], /* TODO: can't specify a constant here */
 }
 
 impl FulfillersKeys {
@@ -32,19 +33,19 @@ impl FulfillersKeys {
         }
     }
 
-    /// Puts another fulfiller's key into the list.
+    /// Puts another fulfiller's key into the list and returns the updated len.
     ///
-    /// Returns the updated len. Returns None if this authority is present.
+    /// Returns None if this authority is present or if `MAX_FULFILLERS` reached.
     pub fn put(ref mut self, authority: Address) -> Option<u64> {
         let mut keys = self.keys;
         let mut i: u64 = 0;
         while i < MAX_FULFILLERS {
-            if keys[i].value == ZERO_B256 {
+            if keys[i].bits() == ZERO_B256 {
                 keys[i] = authority;
                 self.keys = keys;
-                return Option::Some(i + 1_u64);
+                return Some(i + 1_u64);
             } else if keys[i] == authority {
-                return Option::None;
+                return None;
             }
             i += 1_u64;
         }
@@ -53,7 +54,8 @@ impl FulfillersKeys {
         // or `MAX_FULFILLERS` and `MAX_AUTHORITIES` does not match
         log("Fulfill overflow");
         revert(FAILED_REQUIRE_SIGNAL);
-        Option::None
+
+        None
     }
 }
 
@@ -66,9 +68,9 @@ pub enum RandomnessState {
 /// Unfulfilled randomness.
 pub struct Unfulfilled {
     /// Random bytes provided so far.
-    randomness: B512,
+    pub randomness: B512,
     /// List of fulfillers (`Address::zeroed()`-terminated)..
-    keys: FulfillersKeys,
+    pub keys: FulfillersKeys,
 }
 
 impl Unfulfilled {
@@ -84,15 +86,15 @@ impl Unfulfilled {
 /// Fulfilled randomness.
 pub struct Fulfilled {
     /// Resulting randomness.
-    randomness: B512,
+    pub randomness: B512,
     /// List of fulfillers (`Address::zeroed()`-terminated)..
-    keys: FulfillersKeys,
+    pub keys: FulfillersKeys,
 }
 
 /// Randomness request data.
 pub struct Randomness {
-    seed: b256,
-    state: RandomnessState,
+    pub seed: b256,
+    pub state: RandomnessState,
 }
 
 impl Randomness {
@@ -100,7 +102,7 @@ impl Randomness {
     pub fn new(seed: b256) -> Randomness {
         Randomness {
             seed,
-            state: RandomnessState::Unfulfilled(Unfulfilled::new())
+            state: RandomnessState::Unfulfilled(Unfulfilled::new()),
         }
     }
 }
@@ -115,12 +117,10 @@ impl Unfulfilled {
             Option::None => return Option::None,
         };
 
-        let (l1, l2) = self.randomness.into();
-        let (r1, r2) = randomness.into();
+        let left_bits = self.randomness.bits();
+        let right_bits = randomness.bits();
 
-        self.randomness = B512 {
-            bytes: [l1 ^ r1, l2 ^ r2],
-        };
+        self.randomness = (left_bits[0] ^ right_bits[0], left_bits[1] ^ right_bits[1]).into();
 
         Option::Some(num_responses)
     }

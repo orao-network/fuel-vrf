@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.77.0
-  Forc version: 0.51.1
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.89.2
+  Forc version: 0.60.0
+  Fuel-Core version: 0.27.0
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
@@ -14,6 +14,7 @@ import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptio
 import type { VrfImplAbi, VrfImplAbiInterface } from "../VrfImplAbi";
 
 const _abi = {
+  "encoding": "1",
   "types": [
     {
       "typeId": 0,
@@ -23,59 +24,41 @@ const _abi = {
     },
     {
       "typeId": 1,
-      "type": "[_; 10]",
-      "components": [
-        {
-          "name": "__array_element",
-          "type": 9,
-          "typeArguments": [
-            {
-              "name": "",
-              "type": 13,
-              "typeArguments": null
-            }
-          ]
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 2,
-      "type": "[_; 24]",
-      "components": [
-        {
-          "name": "__array_element",
-          "type": 9,
-          "typeArguments": [
-            {
-              "name": "",
-              "type": 20,
-              "typeArguments": null
-            }
-          ]
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 3,
       "type": "[_; 2]",
       "components": [
         {
           "name": "__array_element",
-          "type": 5,
+          "type": 3,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 4,
+      "typeId": 2,
       "type": "[_; 7]",
       "components": [
         {
           "name": "__array_element",
-          "type": 13,
+          "type": 15,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 3,
+      "type": "b256",
+      "components": null,
+      "typeParameters": null
+    },
+    {
+      "typeId": 4,
+      "type": "enum AccessError",
+      "components": [
+        {
+          "name": "NotOwner",
+          "type": 0,
           "typeArguments": null
         }
       ],
@@ -83,12 +66,6 @@ const _abi = {
     },
     {
       "typeId": 5,
-      "type": "b256",
-      "components": null,
-      "typeParameters": null
-    },
-    {
-      "typeId": 6,
       "type": "enum Error",
       "components": [
         {
@@ -175,27 +152,44 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 7,
+      "typeId": 6,
       "type": "enum Event",
       "components": [
         {
           "name": "Fulfill",
-          "type": 17,
+          "type": 19,
           "typeArguments": null
         },
         {
           "name": "Response",
-          "type": 23,
+          "type": 28,
           "typeArguments": null
         },
         {
           "name": "Request",
-          "type": 21,
+          "type": 26,
           "typeArguments": null
         },
         {
           "name": "Reset",
-          "type": 22,
+          "type": 27,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 7,
+      "type": "enum Identity",
+      "components": [
+        {
+          "name": "Address",
+          "type": 15,
+          "typeArguments": null
+        },
+        {
+          "name": "ContractId",
+          "type": 18,
           "typeArguments": null
         }
       ],
@@ -203,16 +197,11 @@ const _abi = {
     },
     {
       "typeId": 8,
-      "type": "enum Identity",
+      "type": "enum InitializationError",
       "components": [
         {
-          "name": "Address",
-          "type": 13,
-          "typeArguments": null
-        },
-        {
-          "name": "ContractId",
-          "type": 16,
+          "name": "CannotReinitialized",
+          "type": 0,
           "typeArguments": null
         }
       ],
@@ -229,12 +218,12 @@ const _abi = {
         },
         {
           "name": "Some",
-          "type": 11,
+          "type": 12,
           "typeArguments": null
         }
       ],
       "typeParameters": [
-        11
+        12
       ]
     },
     {
@@ -243,12 +232,12 @@ const _abi = {
       "components": [
         {
           "name": "Unfulfilled",
-          "type": 24,
+          "type": 29,
           "typeArguments": null
         },
         {
           "name": "Fulfilled",
-          "type": 18,
+          "type": 20,
           "typeArguments": null
         }
       ],
@@ -256,46 +245,50 @@ const _abi = {
     },
     {
       "typeId": 11,
+      "type": "enum State",
+      "components": [
+        {
+          "name": "Uninitialized",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
+          "name": "Initialized",
+          "type": 7,
+          "typeArguments": null
+        },
+        {
+          "name": "Revoked",
+          "type": 0,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 12,
       "type": "generic T",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 12,
+      "typeId": 13,
+      "type": "raw untyped ptr",
+      "components": null,
+      "typeParameters": null
+    },
+    {
+      "typeId": 14,
       "type": "str",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 13,
+      "typeId": 15,
       "type": "struct Address",
       "components": [
         {
-          "name": "value",
-          "type": 5,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 14,
-      "type": "struct AssetId",
-      "components": [
-        {
-          "name": "value",
-          "type": 5,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 15,
-      "type": "struct B512",
-      "components": [
-        {
-          "name": "bytes",
+          "name": "bits",
           "type": 3,
           "typeArguments": null
         }
@@ -304,11 +297,11 @@ const _abi = {
     },
     {
       "typeId": 16,
-      "type": "struct ContractId",
+      "type": "struct AssetId",
       "components": [
         {
-          "name": "value",
-          "type": 5,
+          "name": "bits",
+          "type": 3,
           "typeArguments": null
         }
       ],
@@ -316,16 +309,11 @@ const _abi = {
     },
     {
       "typeId": 17,
-      "type": "struct Fulfill",
+      "type": "struct B512",
       "components": [
         {
-          "name": "seed",
-          "type": 5,
-          "typeArguments": null
-        },
-        {
-          "name": "randomness",
-          "type": 15,
+          "name": "bits",
+          "type": 1,
           "typeArguments": null
         }
       ],
@@ -333,16 +321,11 @@ const _abi = {
     },
     {
       "typeId": 18,
-      "type": "struct Fulfilled",
+      "type": "struct ContractId",
       "components": [
         {
-          "name": "randomness",
-          "type": 15,
-          "typeArguments": null
-        },
-        {
-          "name": "keys",
-          "type": 19,
+          "name": "bits",
+          "type": 3,
           "typeArguments": null
         }
       ],
@@ -350,11 +333,16 @@ const _abi = {
     },
     {
       "typeId": 19,
-      "type": "struct FulfillersKeys",
+      "type": "struct Fulfill",
       "components": [
         {
-          "name": "keys",
-          "type": 4,
+          "name": "seed",
+          "type": 3,
+          "typeArguments": null
+        },
+        {
+          "name": "randomness",
+          "type": 17,
           "typeArguments": null
         }
       ],
@@ -362,11 +350,69 @@ const _abi = {
     },
     {
       "typeId": 20,
+      "type": "struct Fulfilled",
+      "components": [
+        {
+          "name": "randomness",
+          "type": 17,
+          "typeArguments": null
+        },
+        {
+          "name": "keys",
+          "type": 21,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 21,
+      "type": "struct FulfillersKeys",
+      "components": [
+        {
+          "name": "keys",
+          "type": 2,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 22,
+      "type": "struct OwnershipSet",
+      "components": [
+        {
+          "name": "new_owner",
+          "type": 7,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 23,
+      "type": "struct OwnershipTransferred",
+      "components": [
+        {
+          "name": "new_owner",
+          "type": 7,
+          "typeArguments": null
+        },
+        {
+          "name": "previous_owner",
+          "type": 7,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 24,
       "type": "struct Randomness",
       "components": [
         {
           "name": "seed",
-          "type": 5,
+          "type": 3,
           "typeArguments": null
         },
         {
@@ -378,80 +424,124 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 21,
-      "type": "struct Request",
+      "typeId": 25,
+      "type": "struct RawVec",
       "components": [
         {
-          "name": "seed",
-          "type": 5,
-          "typeArguments": null
-        },
-        {
-          "name": "client",
-          "type": 8,
-          "typeArguments": null
-        },
-        {
-          "name": "no",
-          "type": 25,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 22,
-      "type": "struct Reset",
-      "components": [
-        {
-          "name": "seed",
-          "type": 5,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 23,
-      "type": "struct Response",
-      "components": [
-        {
-          "name": "seed",
-          "type": 5,
-          "typeArguments": null
-        },
-        {
-          "name": "authority",
+          "name": "ptr",
           "type": 13,
           "typeArguments": null
         },
         {
-          "name": "randomness",
-          "type": 15,
+          "name": "cap",
+          "type": 31,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": [
+        12
+      ]
+    },
+    {
+      "typeId": 26,
+      "type": "struct Request",
+      "components": [
+        {
+          "name": "seed",
+          "type": 3,
+          "typeArguments": null
+        },
+        {
+          "name": "client",
+          "type": 7,
+          "typeArguments": null
+        },
+        {
+          "name": "no",
+          "type": 31,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 24,
-      "type": "struct Unfulfilled",
+      "typeId": 27,
+      "type": "struct Reset",
       "components": [
         {
-          "name": "randomness",
+          "name": "seed",
+          "type": 3,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 28,
+      "type": "struct Response",
+      "components": [
+        {
+          "name": "seed",
+          "type": 3,
+          "typeArguments": null
+        },
+        {
+          "name": "authority",
           "type": 15,
           "typeArguments": null
         },
         {
-          "name": "keys",
-          "type": 19,
+          "name": "randomness",
+          "type": 17,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 25,
+      "typeId": 29,
+      "type": "struct Unfulfilled",
+      "components": [
+        {
+          "name": "randomness",
+          "type": 17,
+          "typeArguments": null
+        },
+        {
+          "name": "keys",
+          "type": 21,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 30,
+      "type": "struct Vec",
+      "components": [
+        {
+          "name": "buf",
+          "type": 25,
+          "typeArguments": [
+            {
+              "name": "",
+              "type": 12,
+              "typeArguments": null
+            }
+          ]
+        },
+        {
+          "name": "len",
+          "type": 31,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": [
+        12
+      ]
+    },
+    {
+      "typeId": 31,
       "type": "u64",
       "components": null,
       "typeParameters": null
@@ -459,21 +549,44 @@ const _abi = {
   ],
   "functions": [
     {
+      "inputs": [],
+      "name": "owner",
+      "output": {
+        "name": "",
+        "type": 11,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
       "inputs": [
         {
           "name": "authority",
-          "type": 8,
+          "type": 7,
           "typeArguments": null
         },
         {
           "name": "fee",
-          "type": 25,
+          "type": 31,
           "typeArguments": null
         },
         {
           "name": "fulfillment_authorities",
-          "type": 1,
-          "typeArguments": null
+          "type": 30,
+          "typeArguments": [
+            {
+              "name": "",
+              "type": 15,
+              "typeArguments": null
+            }
+          ]
         }
       ],
       "name": "configure",
@@ -496,12 +609,12 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 14,
+          "type": 16,
           "typeArguments": null
         },
         {
           "name": "fee",
-          "type": 25,
+          "type": 31,
           "typeArguments": null
         }
       ],
@@ -525,12 +638,12 @@ const _abi = {
       "inputs": [
         {
           "name": "seed",
-          "type": 5,
+          "type": 3,
           "typeArguments": null
         },
         {
           "name": "signature",
-          "type": 15,
+          "type": 17,
           "typeArguments": null
         }
       ],
@@ -555,24 +668,7 @@ const _abi = {
       "name": "get_asset",
       "output": {
         "name": "",
-        "type": 14,
-        "typeArguments": null
-      },
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
-    },
-    {
-      "inputs": [],
-      "name": "get_authority",
-      "output": {
-        "name": "",
-        "type": 8,
+        "type": 16,
         "typeArguments": null
       },
       "attributes": [
@@ -588,14 +684,14 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 14,
+          "type": 16,
           "typeArguments": null
         }
       ],
       "name": "get_balance",
       "output": {
         "name": "",
-        "type": 25,
+        "type": 31,
         "typeArguments": null
       },
       "attributes": [
@@ -611,14 +707,14 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 14,
+          "type": 16,
           "typeArguments": null
         }
       ],
       "name": "get_fee",
       "output": {
         "name": "",
-        "type": 25,
+        "type": 31,
         "typeArguments": null
       },
       "attributes": [
@@ -635,8 +731,14 @@ const _abi = {
       "name": "get_fulfillment_authorities",
       "output": {
         "name": "",
-        "type": 1,
-        "typeArguments": null
+        "type": 30,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 15,
+            "typeArguments": null
+          }
+        ]
       },
       "attributes": [
         {
@@ -652,7 +754,7 @@ const _abi = {
       "name": "get_num_requests",
       "output": {
         "name": "",
-        "type": 25,
+        "type": 31,
         "typeArguments": null
       },
       "attributes": [
@@ -668,7 +770,7 @@ const _abi = {
       "inputs": [
         {
           "name": "num",
-          "type": 25,
+          "type": 31,
           "typeArguments": null
         }
       ],
@@ -679,7 +781,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 20,
+            "type": 24,
             "typeArguments": null
           }
         ]
@@ -697,7 +799,7 @@ const _abi = {
       "inputs": [
         {
           "name": "seed",
-          "type": 5,
+          "type": 3,
           "typeArguments": null
         }
       ],
@@ -708,7 +810,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 20,
+            "type": 24,
             "typeArguments": null
           }
         ]
@@ -726,15 +828,21 @@ const _abi = {
       "inputs": [
         {
           "name": "offset",
-          "type": 25,
+          "type": 31,
           "typeArguments": null
         }
       ],
       "name": "get_requests",
       "output": {
         "name": "",
-        "type": 2,
-        "typeArguments": null
+        "type": 30,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 24,
+            "typeArguments": null
+          }
+        ]
       },
       "attributes": [
         {
@@ -749,27 +857,27 @@ const _abi = {
       "inputs": [
         {
           "name": "seed",
-          "type": 5,
+          "type": 3,
           "typeArguments": null
         }
       ],
       "name": "request",
       "output": {
         "name": "",
-        "type": 25,
+        "type": 31,
         "typeArguments": null
       },
       "attributes": [
+        {
+          "name": "payable",
+          "arguments": []
+        },
         {
           "name": "storage",
           "arguments": [
             "read",
             "write"
           ]
-        },
-        {
-          "name": "payable",
-          "arguments": []
         }
       ]
     },
@@ -777,17 +885,17 @@ const _abi = {
       "inputs": [
         {
           "name": "asset",
-          "type": 14,
+          "type": 16,
           "typeArguments": null
         },
         {
           "name": "amount",
-          "type": 25,
+          "type": 31,
           "typeArguments": null
         },
         {
           "name": "recipient_address",
-          "type": 13,
+          "type": 15,
           "typeArguments": null
         }
       ],
@@ -810,223 +918,55 @@ const _abi = {
   ],
   "loggedTypes": [
     {
-      "logId": 0,
+      "logId": "11005223066266839355",
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 5,
         "typeArguments": []
       }
     },
     {
-      "logId": 1,
+      "logId": "2161305517876418151",
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 8,
         "typeArguments": []
       }
     },
     {
-      "logId": 2,
+      "logId": "16280289466020123285",
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 22,
         "typeArguments": []
       }
     },
     {
-      "logId": 3,
+      "logId": "4571204900286667806",
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 4,
         "typeArguments": []
       }
     },
     {
-      "logId": 4,
+      "logId": "12970362301975156672",
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 23,
         "typeArguments": []
       }
     },
     {
-      "logId": 5,
+      "logId": "10098701174489624218",
       "loggedType": {
         "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 6,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 7,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 8,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 9,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 10,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 11,
-      "loggedType": {
-        "name": "",
-        "type": 7,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 12,
-      "loggedType": {
-        "name": "",
-        "type": 12,
+        "type": 14,
         "typeArguments": null
       }
     },
     {
-      "logId": 13,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 14,
-      "loggedType": {
-        "name": "",
-        "type": 7,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 15,
-      "loggedType": {
-        "name": "",
-        "type": 7,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 16,
-      "loggedType": {
-        "name": "",
-        "type": 12,
-        "typeArguments": null
-      }
-    },
-    {
-      "logId": 17,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 18,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 19,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 20,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 21,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 22,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 23,
-      "loggedType": {
-        "name": "",
-        "type": 7,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 24,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 25,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 26,
-      "loggedType": {
-        "name": "",
-        "type": 6,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 27,
+      "logId": "16546776185816187435",
       "loggedType": {
         "name": "",
         "type": 6,
@@ -1040,50 +980,44 @@ const _abi = {
 
 const _storageSlots: StorageSlot[] = [
   {
-    "key": "7f91d1a929dce734e7f930bbb279ccfccdb5474227502ea8845815c74bd930a7",
+    "key": "94b2b70d20da552763c7614981b2a4d984380d7ed4e54c01b28c914e79e44bd5",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "b48b753af346966d0d169c0b2e3234611f65d5cfdb57c7b6e7cd6ca93707bee0",
+    "key": "de9090cb50e71c2588c773487d1da7066d0c719849a7e58dc8b6397a25c567c0",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ed",
-    "value": "0000000000000000000000000000000000000000000000000000000000000000"
-  },
-  {
-    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ee",
+    "key": "de9090cb50e71c2588c773487d1da7066d0c719849a7e58dc8b6397a25c567c1",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   }
 ];
 
-export class VrfImplAbi__factory {
-  static readonly abi = _abi;
+export const VrfImplAbi__factory = {
+  abi: _abi,
 
-  static readonly storageSlots = _storageSlots;
+  storageSlots: _storageSlots,
 
-  static createInterface(): VrfImplAbiInterface {
+  createInterface(): VrfImplAbiInterface {
     return new Interface(_abi) as unknown as VrfImplAbiInterface
-  }
+  },
 
-  static connect(
+  connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
   ): VrfImplAbi {
     return new Contract(id, _abi, accountOrProvider) as unknown as VrfImplAbi
-  }
+  },
 
-  static async deployContract(
+  async deployContract(
     bytecode: BytesLike,
     wallet: Account,
     options: DeployContractOptions = {}
   ): Promise<VrfImplAbi> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 
-    const { storageSlots } = VrfImplAbi__factory;
-
     const contract = await factory.deployContract({
-      storageSlots,
+      storageSlots: _storageSlots,
       ...options,
     });
 

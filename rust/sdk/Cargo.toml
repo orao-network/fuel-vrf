@@ -1,16 +1,20 @@
 [package]
 name = "orao-fuel-vrf"
 version.workspace = true
-authors.workspace = true
-repository.workspace = true
 rust-version.workspace = true
 edition.workspace = true
+authors = ["ORAO Devs <hello@orao.network>"]
+homepage = "https://orao.network"
+repository = "https://github.com/orao-network/fuel-vrf"
+license = "Apache-2.0"
+keywords = ["fuel", "vrf", "ed25519", "randomizer", "rng"]
+description = "ORAO VRF Verifiable Random Function for Fuel Blockchain."
 
 [dependencies]
 fuels.workspace = true
+fuel-types.workspace = true
 thiserror = "1"
 tokio = { version = "1.15", features = ["rt", "macros"] }
-fuel-types = { version = "0.47.1" }
 
 [dev-dependencies]
 tokio-test = "0.4.2"

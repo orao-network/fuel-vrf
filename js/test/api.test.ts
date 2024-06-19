@@ -1,25 +1,30 @@
-import { describe, expect, test, beforeAll } from '@jest/globals';
-import { Provider, WalletUnlocked, Wallet, randomBytes, hexlify } from 'fuels';
-import { Vrf } from '../.';
+import { describe, expect, test, beforeAll } from "@jest/globals";
+import { Provider, WalletUnlocked, Wallet, randomBytes, hexlify } from "fuels";
+import { Vrf } from "../.";
 
-const URL = "https://beta-5.fuel.network/graphql";
+const URL = "https://testnet.fuel.network/graphql";
 
 let provider: Provider;
 let vrf: Vrf;
 let seed = randomBytes(32);
 
 if (!process.env.PRIVATE_KEY) {
-    throw new Error("Define PRIVATE_KEY in your env (the wallet must be funded)");
+    throw new Error(
+        "Define PRIVATE_KEY in your env (the wallet must be funded)"
+    );
 }
 
 beforeAll(async () => {
     provider = await Provider.create(URL);
-    const wallet: WalletUnlocked = Wallet.fromPrivateKey(process.env.PRIVATE_KEY ?? "", provider);
+    const wallet: WalletUnlocked = Wallet.fromPrivateKey(
+        process.env.PRIVATE_KEY ?? "",
+        provider
+    );
     vrf = new Vrf(wallet);
 });
 
-describe('VRF API', () => {
-    test('request', async () => {
+describe("VRF API", () => {
+    test("request", async () => {
         let seedHex = hexlify(seed);
         let requestNum = await vrf.request(seedHex);
 
@@ -29,7 +34,7 @@ describe('VRF API', () => {
         expect(response).toBeDefined();
         expect(response?.seed).toEqual(seedHex);
     }, 60_000);
-    test('wait fulfilled', async () => {
+    test("wait fulfilled", async () => {
         let seedHex = hexlify(seed);
         let response = await vrf.getRequest(seedHex);
         expect(response).toBeDefined();

@@ -2,7 +2,7 @@ library;
 
 pub mod randomness;
 
-//use std::asset::*;
+use std::asset::*;
 use std::address::Address;
 use std::identity::Identity;
 use std::b512::B512;
@@ -18,7 +18,7 @@ abi Vrf {
     fn get_fee(asset: AssetId) -> u64;
 
     #[storage(read)]
-    fn get_fulfillment_authorities() -> [Option<Address>; 10];
+    fn get_fulfillment_authorities() -> Vec<Address>;
 
     #[storage(read)]
     fn get_request_by_seed(seed: b256) -> Option<Randomness>;
