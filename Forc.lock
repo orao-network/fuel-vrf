@@ -1,30 +1,21 @@
 [[package]]
 name = "core"
-source = "path+from-root-566CA1D5F8BEAFBF"
-
-[[package]]
-name = "core"
-source = "path+from-root-C589FDE6DAFD6AA0"
+source = "path+from-root-E19CE48B3E858B72"
 
 [[package]]
 name = "russian-roulette"
 source = "member"
 dependencies = [
-    "std git+https://github.com/FuelLabs/sway?tag=v0.49.3#0dc6570377ee9c4a6359ade597fa27351e02a728",
+    "std",
     "vrf_abi",
 ]
 
 [[package]]
 name = "std"
-source = "git+https://github.com/FuelLabs/sway?tag=v0.49.3#0dc6570377ee9c4a6359ade597fa27351e02a728"
-dependencies = ["core path+from-root-C589FDE6DAFD6AA0"]
-
-[[package]]
-name = "std"
-source = "git+https://github.com/fuellabs/sway?tag=v0.49.3#0dc6570377ee9c4a6359ade597fa27351e02a728"
-dependencies = ["core path+from-root-566CA1D5F8BEAFBF"]
+source = "git+https://github.com/fuellabs/sway?tag=v0.60.0#2f0392ee35a1e4dd80bd8034962d5b4083dfb8b6"
+dependencies = ["core"]
 
 [[package]]
 name = "vrf_abi"
 source = "member"
-dependencies = ["std git+https://github.com/fuellabs/sway?tag=v0.49.3#0dc6570377ee9c4a6359ade597fa27351e02a728"]
+dependencies = ["std"]
