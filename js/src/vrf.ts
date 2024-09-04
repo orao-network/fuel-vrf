@@ -8,22 +8,21 @@ import {
     B256Address,
     AssetId,
 } from "fuels";
-import { VrfImplAbi__factory, VrfImplAbi } from "./contracts";
+import { VrfImpl } from "./contracts";
 import { Option } from "./contracts/common";
 import {
     AssetIdInput,
-    AssetIdOutput,
     ContractIdInput,
     IdentityOutput,
     RandomnessOutput,
-} from "./contracts/VrfImplAbi";
+} from "./contracts/VrfImpl";
 
 /** Deployed contract address */
 export const CONTRACT_ID =
     "0x749a7eefd3494f549a248cdcaaa174c1a19f0c1d7898fa7723b6b2f8ecc4828d";
 
 export class Vrf {
-    protected abi: VrfImplAbi;
+    protected abi: VrfImpl;
 
     /**
      * Returns the provider reference.
@@ -50,7 +49,7 @@ export class Vrf {
         walletOrProvider: Account | Provider,
         id: B256Address | AbstractAddress = CONTRACT_ID
     ) {
-        this.abi = VrfImplAbi__factory.connect(id, walletOrProvider);
+        this.abi = new VrfImpl(id, walletOrProvider);
     }
 
     /**
@@ -117,7 +116,7 @@ export class Vrf {
         try {
             addresses = (
                 await this.abi.functions.get_fulfillment_authorities().dryRun()
-            ).value.map((x: AssetIdOutput) => x.bits);
+            ).value.map((x) => x.bits);
         } catch (e) {
             // pass
             addresses = [];
@@ -184,7 +183,9 @@ export class Vrf {
             call = call.txParams(txParams);
         }
         call.callParams({ forward: { amount: fee, assetId: asset } });
-        return (await call.call()).value;
+        const { waitForResult } = await call.call();
+        const { value } = await waitForResult();
+        return value;
     }
 }
 

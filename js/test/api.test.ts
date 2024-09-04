@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { Provider, WalletUnlocked, Wallet, randomBytes, hexlify } from "fuels";
-import { Vrf } from "../.";
+import { Vrf } from "../src";
 
 const URL = "https://testnet.fuel.network/graphql";
 
