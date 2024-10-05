@@ -1,9 +1,8 @@
 use std::fmt;
 
-use fuel_types::{Bytes32, Bytes64};
 use fuels::{
     prelude::*,
-    types::{Bits256, Identity, B512},
+    types::{Bits256, Identity, B512, Bytes32, Bytes64},
 };
 
 pub mod bindings {

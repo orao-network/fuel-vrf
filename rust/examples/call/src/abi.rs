@@ -3,7 +3,7 @@ use fuels::{
     types::Bits256,
 };
 
-use fuels::prelude::Account;
+use fuels::prelude::{Account, Execution};
 
 pub mod bindings {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -27,7 +27,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
             .status()
             // this is necessary, because our contract calls VRF contract
             .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
-            .simulate()
+            .simulate(Execution::StateReadOnly)
             .await?
             .value)
     }
@@ -42,7 +42,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
             .methods()
             .round_cost()
             .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
-            .simulate()
+            .simulate(Execution::StateReadOnly)
             .await?
             .value;
 

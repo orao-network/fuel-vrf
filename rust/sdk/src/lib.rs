@@ -9,15 +9,11 @@ pub use abi::{
 };
 use fuels::crypto::Signature;
 use fuels::{
-    prelude::{
-        Account, Address, AssetId, Bech32ContractId, ContractId, TxPolicies,
-    },
-    programs::{
-        contract::{ContractCallHandler, MultiContractCallHandler},
-    },
+    prelude::{Account, Address, AssetId, Bech32ContractId, ContractId, TxPolicies},
+    programs::calls::{CallHandler, ContractCall},
     types::{Bits256, Identity},
 };
-
+use fuels::prelude::Execution;
 pub use error::Error;
 
 pub mod abi;
@@ -93,7 +89,7 @@ impl<A: Account> Vrf<A> {
     ///     .await?;
     /// # orao_fuel_vrf::Result::Ok(()) });
     /// ```
-    pub fn request(&self, seed: Bits256) -> ContractCallHandler<A, u64> {
+    pub fn request(&self, seed: Bits256) -> CallHandler<A, ContractCall, u64> {
         self.methods.request(seed)
     }
 
@@ -103,7 +99,13 @@ impl<A: Account> Vrf<A> {
     ///
     /// `None` means that the contract instance is not yet configured.
     pub async fn get_authority(&self) -> Result<Option<Identity>> {
-        match self.methods.owner().simulate().await?.value {
+        match self
+            .methods
+            .owner()
+            .simulate(Execution::StateReadOnly)
+            .await?
+            .value
+        {
             State::Initialized(authority) => Ok(Some(authority)),
             _ => Ok(None),
         }
@@ -113,7 +115,12 @@ impl<A: Account> Vrf<A> {
     ///
     /// Use [`AssetId::BASE`] to get base asset fee.
     pub async fn get_fee(&self, asset: AssetId) -> Result<u64> {
-        Ok(self.methods.get_fee(asset).simulate().await?.value)
+        Ok(self
+            .methods
+            .get_fee(asset)
+            .simulate(Execution::StateReadOnly)
+            .await?
+            .value)
     }
 
     /// Returns the additional asset to pay fee with.
@@ -121,7 +128,12 @@ impl<A: Account> Vrf<A> {
     /// Note that it returns the base asset if additional asset is not configured.
     pub async fn get_asset(&self) -> Result<AssetId> {
         Ok(AssetId::new(
-            self.methods.get_asset().simulate().await?.value.into(),
+            self.methods
+                .get_asset()
+                .simulate(Execution::StateReadOnly)
+                .await?
+                .value
+                .into(),
         ))
     }
 
@@ -130,56 +142,76 @@ impl<A: Account> Vrf<A> {
         let response = self
             .methods
             .get_fulfillment_authorities()
-            .simulate()
+            .simulate(Execution::StateReadOnly)
             .await?;
         Ok(response.value)
     }
 
     /// Returns collected fees amount for the given asset.
     pub async fn get_balance(&self, asset: AssetId) -> Result<u64> {
-        Ok(self.methods.get_balance(asset).simulate().await?.value)
+        Ok(self
+            .methods
+            .get_balance(asset)
+            .simulate(Execution::StateReadOnly)
+            .await?
+            .value)
     }
 
     /// Returns request by its number.
     pub async fn get_request_by_num(&self, num: u64) -> Result<Option<Randomness>> {
-        let response = self.methods.get_request_by_num(num).simulate().await?;
+        let response = self
+            .methods
+            .get_request_by_num(num)
+            .simulate(Execution::StateReadOnly)
+            .await?;
         Ok(response.value)
     }
 
     /// Returns request by its seed.
     pub async fn get_request_by_seed(&self, seed: Bits256) -> Result<Option<Randomness>> {
-        let response = self.methods.get_request_by_seed(seed).simulate().await?;
+        let response = self
+            .methods
+            .get_request_by_seed(seed)
+            .simulate(Execution::StateReadOnly)
+            .await?;
         Ok(response.value)
     }
 
     /// Returns the number of performed requests.
     pub async fn get_num_requests(&self) -> Result<u64> {
-        Ok(self.methods.get_num_requests().simulate().await?.value)
+        Ok(self
+            .methods
+            .get_num_requests()
+            .simulate(Execution::StateReadOnly)
+            .await?
+            .value)
     }
 
     /// Convenience method that returns on-chain VRF status.
     // TODO: Clean this up as soon as FuelLabs/fuels-rs#914 is fixed
     // TODO: 15.03.2024. this should be refactored using ReceiptParser
     pub async fn get_status(&self) -> Result<Status> {
-        let mut call = MultiContractCallHandler::new(self.abi.account());
-        call.add_call(self.methods.owner())
+        let mut call = CallHandler::new_multi_call(self.abi.account())
+            .add_call(self.methods.owner())
             .add_call(self.methods.get_balance(self.base_asset))
             .add_call(self.methods.get_fee(self.base_asset))
             .add_call(self.methods.get_asset())
             .add_call(self.methods.get_fulfillment_authorities())
-            .add_call(self.methods.get_num_requests());
-        call = call.with_tx_policies(TxPolicies::default().with_script_gas_limit(10_000_000));
+            .add_call(self.methods.get_num_requests())
+            .with_tx_policies(TxPolicies::default().with_script_gas_limit(10_000_000));
 
         let response = call
-            .simulate::<(State, u64, u64, AssetId, Vec<Address>, u64)>()
+            .simulate::<(State, u64, u64, AssetId, Vec<Address>, u64)>(Execution::StateReadOnly)
             .await?;
         let asset = response.value.3;
 
         let additional_asset = if asset != self.base_asset {
-            let mut call = MultiContractCallHandler::new(self.abi.account());
-            call.add_call(self.methods.get_balance(asset))
+            let mut call = CallHandler::new_multi_call(self.abi.account())
+                .add_call(self.methods.get_balance(asset))
                 .add_call(self.methods.get_fee(asset));
-            let response = call.simulate::<(u64, u64)>().await?;
+            let response = call
+                .simulate::<(u64, u64)>(Execution::StateReadOnly)
+                .await?;
             Some((
                 asset,
                 AssetStatus {

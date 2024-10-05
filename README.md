@@ -49,3 +49,4 @@ cargo build --release
 
 [on-chain Russian Roulette game](https://github.com/orao-network/fuel-vrf/tree/master/rust/examples/call) and
 [off-chain VRF request](https://github.com/orao-network/fuel-vrf/tree/master/rust/examples/off-chain)
+

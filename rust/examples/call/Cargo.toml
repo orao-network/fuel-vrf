@@ -12,7 +12,6 @@ anyhow = "1"
 clap = { version = "4", features = ["derive", "env"] }
 eth-keystore = "0.4"
 fuels.workspace = true
-fuel-crypto.workspace = true
 indicatif = "0.17"
 orao-fuel-vrf = { version = "0.2.0", path = "../../sdk" }
 rand = "0.8"

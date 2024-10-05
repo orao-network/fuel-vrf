@@ -1,544 +1,541 @@
 {
-    "encoding": "1",
-    "types": [
+    "programType": "contract",
+    "specVersion": "1",
+    "encodingVersion": "1",
+    "concreteTypes": [
         {
-            "typeId": 0,
             "type": "()",
-            "components": [],
-            "typeParameters": null
+            "concreteTypeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
         },
         {
-            "typeId": 1,
-            "type": "[_; 2]",
-            "components": [
-                {
-                    "name": "__array_element",
-                    "type": 3,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 2,
-            "type": "[_; 7]",
-            "components": [
-                {
-                    "name": "__array_element",
-                    "type": 15,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 3,
             "type": "b256",
-            "components": null,
-            "typeParameters": null
+            "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
         },
         {
-            "typeId": 4,
-            "type": "enum AccessError",
+            "type": "enum error::Error",
+            "concreteTypeId": "98ba681212c5293b46b67c3ecb774e0a2e3d324008580c35fc533e1c1a762d7e",
+            "metadataTypeId": 2
+        },
+        {
+            "type": "enum event::Event",
+            "concreteTypeId": "e5a1f545bd77822ba0ce1fa18bd5fb220003190328878715effa461110d5c232",
+            "metadataTypeId": 3
+        },
+        {
+            "type": "enum standards::src5::AccessError",
+            "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d",
+            "metadataTypeId": 4
+        },
+        {
+            "type": "enum standards::src5::State",
+            "concreteTypeId": "192bc7098e2fe60635a9918afb563e4e5419d386da2bdbf0d716b4bc8549802c",
+            "metadataTypeId": 5
+        },
+        {
+            "type": "enum std::identity::Identity",
+            "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
+            "metadataTypeId": 6
+        },
+        {
+            "type": "enum std::option::Option<struct vrf_abi::randomness::Randomness>",
+            "concreteTypeId": "3bc9010330c63d8589b681226175f8e602440d93606e808aa4815a6783280e20",
+            "metadataTypeId": 7,
+            "typeArguments": [
+                "df4614f52fecb7117de6d08754213cd97e8a055ebff3283eb3632299f2ee3dd3"
+            ]
+        },
+        {
+            "type": "enum sway_libs::ownership::errors::InitializationError",
+            "concreteTypeId": "1dfe7feadc1d9667a4351761230f948744068a090fe91b1bc6763a90ed5d3893",
+            "metadataTypeId": 8
+        },
+        {
+            "type": "str",
+            "concreteTypeId": "8c25cb3686462e9a86d2883c5688a22fe738b0bbc85f458d2d2b5f3f667c6d5a"
+        },
+        {
+            "type": "struct std::address::Address",
+            "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308",
+            "metadataTypeId": 16
+        },
+        {
+            "type": "struct std::asset_id::AssetId",
+            "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+            "metadataTypeId": 17
+        },
+        {
+            "type": "struct std::b512::B512",
+            "concreteTypeId": "745e252e80bec590efc3999ae943f07ccea4d5b45b00bb6575499b64abdd3322",
+            "metadataTypeId": 18
+        },
+        {
+            "type": "struct std::vec::Vec<struct std::address::Address>",
+            "concreteTypeId": "fc4d04749f58f5bf7fd11c9ed9065b555ad48afcaa1172aaefa952a3a7712160",
+            "metadataTypeId": 21,
+            "typeArguments": [
+                "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308"
+            ]
+        },
+        {
+            "type": "struct std::vec::Vec<struct vrf_abi::randomness::Randomness>",
+            "concreteTypeId": "1520cb2bcbf5d314578cc80b3588e131bcec5bd26dd7706bcdb456b4d8cf2734",
+            "metadataTypeId": 21,
+            "typeArguments": [
+                "df4614f52fecb7117de6d08754213cd97e8a055ebff3283eb3632299f2ee3dd3"
+            ]
+        },
+        {
+            "type": "struct sway_libs::ownership::events::OwnershipSet",
+            "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
+            "metadataTypeId": 22
+        },
+        {
+            "type": "struct sway_libs::ownership::events::OwnershipTransferred",
+            "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
+            "metadataTypeId": 23
+        },
+        {
+            "type": "struct vrf_abi::randomness::Randomness",
+            "concreteTypeId": "df4614f52fecb7117de6d08754213cd97e8a055ebff3283eb3632299f2ee3dd3",
+            "metadataTypeId": 26
+        },
+        {
+            "type": "u64",
+            "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+    ],
+    "metadataTypes": [
+        {
+            "type": "[_; 2]",
+            "metadataTypeId": 0,
             "components": [
                 {
-                    "name": "NotOwner",
-                    "type": 0,
-                    "typeArguments": null
+                    "name": "__array_element",
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 5,
-            "type": "enum Error",
+            "type": "[_; 7]",
+            "metadataTypeId": 1,
+            "components": [
+                {
+                    "name": "__array_element",
+                    "typeId": 16
+                }
+            ]
+        },
+        {
+            "type": "enum error::Error",
+            "metadataTypeId": 2,
             "components": [
                 {
                     "name": "ContractNotConfigured",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "AssetNotConfigured",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "NotAuthorized",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "RemainingAssets",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "NonZeroFee",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "ZeroAuthority",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "ZeroFee",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "NoFeePaid",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "WrongFeePaid",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "SeedInUse",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "NoAmountSpecified",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "NotEnoughFunds",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "UnknownRequest",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "InvalidResponse",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "Responded",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "Fulfilled",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 6,
-            "type": "enum Event",
+            "type": "enum event::Event",
+            "metadataTypeId": 3,
             "components": [
                 {
                     "name": "Fulfill",
-                    "type": 19,
-                    "typeArguments": null
+                    "typeId": 12
                 },
                 {
                     "name": "Response",
-                    "type": 28,
-                    "typeArguments": null
+                    "typeId": 15
                 },
                 {
                     "name": "Request",
-                    "type": 26,
-                    "typeArguments": null
+                    "typeId": 13
                 },
                 {
                     "name": "Reset",
-                    "type": 27,
-                    "typeArguments": null
+                    "typeId": 14
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 7,
-            "type": "enum Identity",
+            "type": "enum standards::src5::AccessError",
+            "metadataTypeId": 4,
             "components": [
                 {
-                    "name": "Address",
-                    "type": 15,
-                    "typeArguments": null
-                },
-                {
-                    "name": "ContractId",
-                    "type": 18,
-                    "typeArguments": null
+                    "name": "NotOwner",
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 8,
-            "type": "enum InitializationError",
-            "components": [
-                {
-                    "name": "CannotReinitialized",
-                    "type": 0,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 9,
-            "type": "enum Option",
-            "components": [
-                {
-                    "name": "None",
-                    "type": 0,
-                    "typeArguments": null
-                },
-                {
-                    "name": "Some",
-                    "type": 12,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": [12]
-        },
-        {
-            "typeId": 10,
-            "type": "enum RandomnessState",
-            "components": [
-                {
-                    "name": "Unfulfilled",
-                    "type": 29,
-                    "typeArguments": null
-                },
-                {
-                    "name": "Fulfilled",
-                    "type": 20,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 11,
-            "type": "enum State",
+            "type": "enum standards::src5::State",
+            "metadataTypeId": 5,
             "components": [
                 {
                     "name": "Uninitialized",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 },
                 {
                     "name": "Initialized",
-                    "type": 7,
-                    "typeArguments": null
+                    "typeId": 6
                 },
                 {
                     "name": "Revoked",
-                    "type": 0,
-                    "typeArguments": null
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 12,
+            "type": "enum std::identity::Identity",
+            "metadataTypeId": 6,
+            "components": [
+                {
+                    "name": "Address",
+                    "typeId": 16
+                },
+                {
+                    "name": "ContractId",
+                    "typeId": 19
+                }
+            ]
+        },
+        {
+            "type": "enum std::option::Option",
+            "metadataTypeId": 7,
+            "components": [
+                {
+                    "name": "None",
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+                },
+                {
+                    "name": "Some",
+                    "typeId": 10
+                }
+            ],
+            "typeParameters": [
+                10
+            ]
+        },
+        {
+            "type": "enum sway_libs::ownership::errors::InitializationError",
+            "metadataTypeId": 8,
+            "components": [
+                {
+                    "name": "CannotReinitialized",
+                    "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+                }
+            ]
+        },
+        {
+            "type": "enum vrf_abi::randomness::RandomnessState",
+            "metadataTypeId": 9,
+            "components": [
+                {
+                    "name": "Unfulfilled",
+                    "typeId": 27
+                },
+                {
+                    "name": "Fulfilled",
+                    "typeId": 24
+                }
+            ]
+        },
+        {
             "type": "generic T",
-            "components": null,
-            "typeParameters": null
+            "metadataTypeId": 10
         },
         {
-            "typeId": 13,
             "type": "raw untyped ptr",
-            "components": null,
-            "typeParameters": null
+            "metadataTypeId": 11
         },
         {
-            "typeId": 14,
-            "type": "str",
-            "components": null,
-            "typeParameters": null
-        },
-        {
-            "typeId": 15,
-            "type": "struct Address",
-            "components": [
-                {
-                    "name": "bits",
-                    "type": 3,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 16,
-            "type": "struct AssetId",
-            "components": [
-                {
-                    "name": "bits",
-                    "type": 3,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 17,
-            "type": "struct B512",
-            "components": [
-                {
-                    "name": "bits",
-                    "type": 1,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 18,
-            "type": "struct ContractId",
-            "components": [
-                {
-                    "name": "bits",
-                    "type": 3,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 19,
-            "type": "struct Fulfill",
+            "type": "struct event::Fulfill",
+            "metadataTypeId": 12,
             "components": [
                 {
                     "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 },
                 {
                     "name": "randomness",
-                    "type": 17,
-                    "typeArguments": null
+                    "typeId": 18
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 20,
-            "type": "struct Fulfilled",
-            "components": [
-                {
-                    "name": "randomness",
-                    "type": 17,
-                    "typeArguments": null
-                },
-                {
-                    "name": "keys",
-                    "type": 21,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 21,
-            "type": "struct FulfillersKeys",
-            "components": [
-                {
-                    "name": "keys",
-                    "type": 2,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 22,
-            "type": "struct OwnershipSet",
-            "components": [
-                {
-                    "name": "new_owner",
-                    "type": 7,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 23,
-            "type": "struct OwnershipTransferred",
-            "components": [
-                {
-                    "name": "new_owner",
-                    "type": 7,
-                    "typeArguments": null
-                },
-                {
-                    "name": "previous_owner",
-                    "type": 7,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 24,
-            "type": "struct Randomness",
+            "type": "struct event::Request",
+            "metadataTypeId": 13,
             "components": [
                 {
                     "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
-                },
-                {
-                    "name": "state",
-                    "type": 10,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": null
-        },
-        {
-            "typeId": 25,
-            "type": "struct RawVec",
-            "components": [
-                {
-                    "name": "ptr",
-                    "type": 13,
-                    "typeArguments": null
-                },
-                {
-                    "name": "cap",
-                    "type": 31,
-                    "typeArguments": null
-                }
-            ],
-            "typeParameters": [12]
-        },
-        {
-            "typeId": 26,
-            "type": "struct Request",
-            "components": [
-                {
-                    "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 },
                 {
                     "name": "client",
-                    "type": 7,
-                    "typeArguments": null
+                    "typeId": 6
                 },
                 {
                     "name": "no",
-                    "type": 31,
-                    "typeArguments": null
+                    "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 27,
-            "type": "struct Reset",
+            "type": "struct event::Reset",
+            "metadataTypeId": 14,
             "components": [
                 {
                     "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 28,
-            "type": "struct Response",
+            "type": "struct event::Response",
+            "metadataTypeId": 15,
             "components": [
                 {
                     "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 },
                 {
                     "name": "authority",
-                    "type": 15,
-                    "typeArguments": null
+                    "typeId": 16
                 },
                 {
                     "name": "randomness",
-                    "type": 17,
-                    "typeArguments": null
+                    "typeId": 18
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 29,
-            "type": "struct Unfulfilled",
+            "type": "struct std::address::Address",
+            "metadataTypeId": 16,
             "components": [
                 {
-                    "name": "randomness",
-                    "type": 17,
-                    "typeArguments": null
-                },
-                {
-                    "name": "keys",
-                    "type": 21,
-                    "typeArguments": null
+                    "name": "bits",
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 }
-            ],
-            "typeParameters": null
+            ]
         },
         {
-            "typeId": 30,
-            "type": "struct Vec",
+            "type": "struct std::asset_id::AssetId",
+            "metadataTypeId": 17,
+            "components": [
+                {
+                    "name": "bits",
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+                }
+            ]
+        },
+        {
+            "type": "struct std::b512::B512",
+            "metadataTypeId": 18,
+            "components": [
+                {
+                    "name": "bits",
+                    "typeId": 0
+                }
+            ]
+        },
+        {
+            "type": "struct std::contract_id::ContractId",
+            "metadataTypeId": 19,
+            "components": [
+                {
+                    "name": "bits",
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+                }
+            ]
+        },
+        {
+            "type": "struct std::vec::RawVec",
+            "metadataTypeId": 20,
+            "components": [
+                {
+                    "name": "ptr",
+                    "typeId": 11
+                },
+                {
+                    "name": "cap",
+                    "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+                }
+            ],
+            "typeParameters": [
+                10
+            ]
+        },
+        {
+            "type": "struct std::vec::Vec",
+            "metadataTypeId": 21,
             "components": [
                 {
                     "name": "buf",
-                    "type": 25,
+                    "typeId": 20,
                     "typeArguments": [
                         {
                             "name": "",
-                            "type": 12,
-                            "typeArguments": null
+                            "typeId": 10
                         }
                     ]
                 },
                 {
                     "name": "len",
-                    "type": 31,
-                    "typeArguments": null
+                    "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
                 }
             ],
-            "typeParameters": [12]
+            "typeParameters": [
+                10
+            ]
         },
         {
-            "typeId": 31,
-            "type": "u64",
-            "components": null,
-            "typeParameters": null
+            "type": "struct sway_libs::ownership::events::OwnershipSet",
+            "metadataTypeId": 22,
+            "components": [
+                {
+                    "name": "new_owner",
+                    "typeId": 6
+                }
+            ]
+        },
+        {
+            "type": "struct sway_libs::ownership::events::OwnershipTransferred",
+            "metadataTypeId": 23,
+            "components": [
+                {
+                    "name": "new_owner",
+                    "typeId": 6
+                },
+                {
+                    "name": "previous_owner",
+                    "typeId": 6
+                }
+            ]
+        },
+        {
+            "type": "struct vrf_abi::randomness::Fulfilled",
+            "metadataTypeId": 24,
+            "components": [
+                {
+                    "name": "randomness",
+                    "typeId": 18
+                },
+                {
+                    "name": "keys",
+                    "typeId": 25
+                }
+            ]
+        },
+        {
+            "type": "struct vrf_abi::randomness::FulfillersKeys",
+            "metadataTypeId": 25,
+            "components": [
+                {
+                    "name": "keys",
+                    "typeId": 1
+                }
+            ]
+        },
+        {
+            "type": "struct vrf_abi::randomness::Randomness",
+            "metadataTypeId": 26,
+            "components": [
+                {
+                    "name": "seed",
+                    "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+                },
+                {
+                    "name": "state",
+                    "typeId": 9
+                }
+            ]
+        },
+        {
+            "type": "struct vrf_abi::randomness::Unfulfilled",
+            "metadataTypeId": 27,
+            "components": [
+                {
+                    "name": "randomness",
+                    "typeId": 18
+                },
+                {
+                    "name": "keys",
+                    "typeId": 25
+                }
+            ]
         }
     ],
     "functions": [
         {
             "inputs": [],
             "name": "owner",
-            "output": {
-                "name": "",
-                "type": 11,
-                "typeArguments": null
-            },
+            "output": "192bc7098e2fe60635a9918afb563e4e5419d386da2bdbf0d716b4bc8549802c",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
@@ -546,36 +543,26 @@
             "inputs": [
                 {
                     "name": "authority",
-                    "type": 7,
-                    "typeArguments": null
+                    "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
                 },
                 {
                     "name": "fee",
-                    "type": 31,
-                    "typeArguments": null
+                    "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
                 },
                 {
                     "name": "fulfillment_authorities",
-                    "type": 30,
-                    "typeArguments": [
-                        {
-                            "name": "",
-                            "type": 15,
-                            "typeArguments": null
-                        }
-                    ]
+                    "concreteTypeId": "fc4d04749f58f5bf7fd11c9ed9065b555ad48afcaa1172aaefa952a3a7712160"
                 }
             ],
             "name": "configure",
-            "output": {
-                "name": "",
-                "type": 0,
-                "typeArguments": null
-            },
+            "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read", "write"]
+                    "arguments": [
+                        "read",
+                        "write"
+                    ]
                 }
             ]
         },
@@ -583,25 +570,22 @@
             "inputs": [
                 {
                     "name": "asset",
-                    "type": 16,
-                    "typeArguments": null
+                    "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
                 },
                 {
                     "name": "fee",
-                    "type": 31,
-                    "typeArguments": null
+                    "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
                 }
             ],
             "name": "configure_asset",
-            "output": {
-                "name": "",
-                "type": 0,
-                "typeArguments": null
-            },
+            "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read", "write"]
+                    "arguments": [
+                        "read",
+                        "write"
+                    ]
                 }
             ]
         },
@@ -609,40 +593,35 @@
             "inputs": [
                 {
                     "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
+                    "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 },
                 {
                     "name": "signature",
-                    "type": 17,
-                    "typeArguments": null
+                    "concreteTypeId": "745e252e80bec590efc3999ae943f07ccea4d5b45b00bb6575499b64abdd3322"
                 }
             ],
             "name": "fulfill",
-            "output": {
-                "name": "",
-                "type": 0,
-                "typeArguments": null
-            },
+            "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read", "write"]
+                    "arguments": [
+                        "read",
+                        "write"
+                    ]
                 }
             ]
         },
         {
             "inputs": [],
             "name": "get_asset",
-            "output": {
-                "name": "",
-                "type": 16,
-                "typeArguments": null
-            },
+            "output": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
@@ -650,20 +629,17 @@
             "inputs": [
                 {
                     "name": "asset",
-                    "type": 16,
-                    "typeArguments": null
+                    "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
                 }
             ],
             "name": "get_balance",
-            "output": {
-                "name": "",
-                "type": 31,
-                "typeArguments": null
-            },
+            "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
@@ -671,56 +647,43 @@
             "inputs": [
                 {
                     "name": "asset",
-                    "type": 16,
-                    "typeArguments": null
+                    "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
                 }
             ],
             "name": "get_fee",
-            "output": {
-                "name": "",
-                "type": 31,
-                "typeArguments": null
-            },
+            "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
         {
             "inputs": [],
             "name": "get_fulfillment_authorities",
-            "output": {
-                "name": "",
-                "type": 30,
-                "typeArguments": [
-                    {
-                        "name": "",
-                        "type": 15,
-                        "typeArguments": null
-                    }
-                ]
-            },
+            "output": "fc4d04749f58f5bf7fd11c9ed9065b555ad48afcaa1172aaefa952a3a7712160",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
         {
             "inputs": [],
             "name": "get_num_requests",
-            "output": {
-                "name": "",
-                "type": 31,
-                "typeArguments": null
-            },
+            "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
@@ -728,26 +691,17 @@
             "inputs": [
                 {
                     "name": "num",
-                    "type": 31,
-                    "typeArguments": null
+                    "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
                 }
             ],
             "name": "get_request_by_num",
-            "output": {
-                "name": "",
-                "type": 9,
-                "typeArguments": [
-                    {
-                        "name": "",
-                        "type": 24,
-                        "typeArguments": null
-                    }
-                ]
-            },
+            "output": "3bc9010330c63d8589b681226175f8e602440d93606e808aa4815a6783280e20",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
@@ -755,26 +709,17 @@
             "inputs": [
                 {
                     "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
+                    "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 }
             ],
             "name": "get_request_by_seed",
-            "output": {
-                "name": "",
-                "type": 9,
-                "typeArguments": [
-                    {
-                        "name": "",
-                        "type": 24,
-                        "typeArguments": null
-                    }
-                ]
-            },
+            "output": "3bc9010330c63d8589b681226175f8e602440d93606e808aa4815a6783280e20",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
@@ -782,26 +727,17 @@
             "inputs": [
                 {
                     "name": "offset",
-                    "type": 31,
-                    "typeArguments": null
+                    "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
                 }
             ],
             "name": "get_requests",
-            "output": {
-                "name": "",
-                "type": 30,
-                "typeArguments": [
-                    {
-                        "name": "",
-                        "type": 24,
-                        "typeArguments": null
-                    }
-                ]
-            },
+            "output": "1520cb2bcbf5d314578cc80b3588e131bcec5bd26dd7706bcdb456b4d8cf2734",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read"]
+                    "arguments": [
+                        "read"
+                    ]
                 }
             ]
         },
@@ -809,16 +745,11 @@
             "inputs": [
                 {
                     "name": "seed",
-                    "type": 3,
-                    "typeArguments": null
+                    "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
                 }
             ],
             "name": "request",
-            "output": {
-                "name": "",
-                "type": 31,
-                "typeArguments": null
-            },
+            "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
             "attributes": [
                 {
                     "name": "payable",
@@ -826,7 +757,10 @@
                 },
                 {
                     "name": "storage",
-                    "arguments": ["read", "write"]
+                    "arguments": [
+                        "read",
+                        "write"
+                    ]
                 }
             ]
         },
@@ -834,30 +768,26 @@
             "inputs": [
                 {
                     "name": "asset",
-                    "type": 16,
-                    "typeArguments": null
+                    "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
                 },
                 {
                     "name": "amount",
-                    "type": 31,
-                    "typeArguments": null
+                    "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
                 },
                 {
                     "name": "recipient_address",
-                    "type": 15,
-                    "typeArguments": null
+                    "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308"
                 }
             ],
             "name": "withdraw_fees",
-            "output": {
-                "name": "",
-                "type": 0,
-                "typeArguments": null
-            },
+            "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
             "attributes": [
                 {
                     "name": "storage",
-                    "arguments": ["read", "write"]
+                    "arguments": [
+                        "read",
+                        "write"
+                    ]
                 }
             ]
         }
@@ -865,59 +795,31 @@
     "loggedTypes": [
         {
             "logId": "11005223066266839355",
-            "loggedType": {
-                "name": "",
-                "type": 5,
-                "typeArguments": []
-            }
+            "concreteTypeId": "98ba681212c5293b46b67c3ecb774e0a2e3d324008580c35fc533e1c1a762d7e"
         },
         {
             "logId": "2161305517876418151",
-            "loggedType": {
-                "name": "",
-                "type": 8,
-                "typeArguments": []
-            }
+            "concreteTypeId": "1dfe7feadc1d9667a4351761230f948744068a090fe91b1bc6763a90ed5d3893"
         },
         {
             "logId": "16280289466020123285",
-            "loggedType": {
-                "name": "",
-                "type": 22,
-                "typeArguments": []
-            }
+            "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5"
         },
         {
             "logId": "4571204900286667806",
-            "loggedType": {
-                "name": "",
-                "type": 4,
-                "typeArguments": []
-            }
+            "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d"
         },
         {
             "logId": "12970362301975156672",
-            "loggedType": {
-                "name": "",
-                "type": 23,
-                "typeArguments": []
-            }
+            "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308"
         },
         {
             "logId": "10098701174489624218",
-            "loggedType": {
-                "name": "",
-                "type": 14,
-                "typeArguments": null
-            }
+            "concreteTypeId": "8c25cb3686462e9a86d2883c5688a22fe738b0bbc85f458d2d2b5f3f667c6d5a"
         },
         {
             "logId": "16546776185816187435",
-            "loggedType": {
-                "name": "",
-                "type": 6,
-                "typeArguments": []
-            }
+            "concreteTypeId": "e5a1f545bd77822ba0ce1fa18bd5fb220003190328878715effa461110d5c232"
         }
     ],
     "messagesTypes": [],

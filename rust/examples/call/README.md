@@ -2,7 +2,7 @@
 
 This is a demo game that utilizes ORAO's VRF contract to get on-chain randomness. It is written in Sway and published on the testnet.
 
-Contract ID is `0xc44327a482115e513e6eec4396a436d158d8aeb90b06d95c1f87089f693125ed` which is also defined as `CONTRACT_ID` in src/main.rs.
+Contract ID is `0x749a7eefd3494f549a248cdcaaa174c1a19f0c1d7898fa7723b6b2f8ecc4828d` which is also defined as `CONTRACT_ID` in src/main.rs.
 
 ## Requirements
 

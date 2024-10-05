@@ -1,14 +1,11 @@
 use std::time::Duration;
 
 use clap::Parser;
-//use fuel_crypto::fuel_types::Bytes32;
-use fuels::types::Bits256;
+use fuels::types::{Bits256, Bytes32};
 use fuels::prelude::*;
 use indicatif::ProgressBar;
 use orao_fuel_vrf::{Event, Fulfilled, RandomnessState, Vrf, randomness_to_bytes64};
 use tokio::time::timeout;
-
-use fuel_crypto::fuel_types::Bytes32;
 
 mod utils;
 
