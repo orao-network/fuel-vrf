@@ -14,7 +14,7 @@
 
 Make sure to have a working rust development environment.
 
-1. Update Rust. Your rust version needs to be no older than v1.65
+1. Update Rust. Your rust version needs to be no older than v1.81
 
 ```sh
 rustup update

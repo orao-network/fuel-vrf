@@ -18,7 +18,7 @@ mod utils;
 /// Fuel VRF on-chain call example.
 #[derive(Debug, Parser)]
 pub struct Args {
-    /// Id of a published RussianRoulette contract.
+    /// ID of a published RussianRoulette contract.
     #[arg(long, default_value_t = CONTRACT_ID)]
     pub contract_id: ContractId,
 

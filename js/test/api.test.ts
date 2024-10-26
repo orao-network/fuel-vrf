@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { Provider, WalletUnlocked, Wallet, randomBytes, hexlify } from "fuels";
-import { Vrf } from "../src";
+import { TESTNET_CONTRACT_ID, Vrf } from "../src";
 
 const URL = "https://testnet.fuel.network/graphql";
 
@@ -20,7 +20,7 @@ beforeAll(async () => {
         process.env.PRIVATE_KEY ?? "",
         provider
     );
-    vrf = new Vrf(wallet);
+    vrf = new Vrf(wallet, TESTNET_CONTRACT_ID);
 });
 
 describe("VRF API", () => {

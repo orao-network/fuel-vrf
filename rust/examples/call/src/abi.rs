@@ -26,7 +26,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
             .methods()
             .status()
             // this is necessary, because our contract calls VRF contract
-            .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .with_contract_ids(&[orao_fuel_vrf::TESTNET_CONTRACT_ID.into()])
             .simulate(Execution::StateReadOnly)
             .await?
             .value)
@@ -41,7 +41,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
         let fee = self
             .methods()
             .round_cost()
-            .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .with_contract_ids(&[orao_fuel_vrf::TESTNET_CONTRACT_ID.into()])
             .simulate(Execution::StateReadOnly)
             .await?
             .value;
@@ -52,7 +52,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
             .spin_and_pull_the_trigger(Bits256(force))
             .with_tx_policies(TxPolicies::default())
             .call_params(CallParameters::default().with_amount(fee))?
-            .with_contract_ids(&[orao_fuel_vrf::CONTRACT_ID.into()])
+            .with_contract_ids(&[orao_fuel_vrf::TESTNET_CONTRACT_ID.into()])
             .call()
             .await?;
 

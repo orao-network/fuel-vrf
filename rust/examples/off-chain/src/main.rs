@@ -13,7 +13,7 @@ mod utils;
 #[derive(Debug, Parser)]
 pub struct Args {
     /// Id of a published VRF contract.
-    #[arg(long, default_value_t = orao_fuel_vrf::CONTRACT_ID)]
+    #[arg(long, default_value_t = orao_fuel_vrf::TESTNET_CONTRACT_ID)]
     pub contract_id: ContractId,
 
     /// Encrypted keystore path.

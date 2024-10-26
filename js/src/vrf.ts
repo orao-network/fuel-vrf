@@ -18,7 +18,9 @@ import {
 } from "./contracts/VrfImpl";
 
 /** Deployed contract address */
-export const CONTRACT_ID =
+export const MAINNET_CONTRACT_ID =
+    "0xa1a4158f8889a05d3082cda0da05135dd20ce67368a9ca2b576b170426acf373";
+export const TESTNET_CONTRACT_ID =
     "0x749a7eefd3494f549a248cdcaaa174c1a19f0c1d7898fa7723b6b2f8ecc4828d";
 
 export class Vrf {
@@ -47,7 +49,7 @@ export class Vrf {
      */
     constructor(
         walletOrProvider: Account | Provider,
-        id: B256Address | AbstractAddress = CONTRACT_ID
+        id: B256Address | AbstractAddress = MAINNET_CONTRACT_ID
     ) {
         this.abi = new VrfImpl(id, walletOrProvider);
     }
