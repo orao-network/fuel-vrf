@@ -1,8 +1,13 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { Provider, WalletUnlocked, Wallet, randomBytes, hexlify } from "fuels";
 import { TESTNET_CONTRACT_ID, Vrf } from "../src";
+// @ts-ignore
+import dotenv from 'dotenv';
 
-const URL = "https://testnet.fuel.network/graphql";
+// Load environment variables from .env file
+dotenv.config();
+
+const URL = "https://testnet.fuel.network/v1/graphql";
 
 let provider: Provider;
 let vrf: Vrf;

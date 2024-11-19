@@ -58,7 +58,7 @@ export class Vrf {
      * Returns the configured authority (if any).
      */
     async getAuthority(): Promise<IdentityOutput | null> {
-        const owner = (await this.abi.functions.owner().dryRun()).value;
+        const owner = (await this.abi.functions.owner().get()).value;
         if (owner.Initialized !== undefined) {
             return owner.Initialized;
         } else {
@@ -80,7 +80,7 @@ export class Vrf {
             asset_id = { bits: asset.toString() };
         }
 
-        return (await this.abi.functions.get_balance(asset_id).dryRun()).value;
+        return (await this.abi.functions.get_balance(asset_id).get()).value;
     }
 
     /**
@@ -89,7 +89,7 @@ export class Vrf {
      * Returns default asset if additional asset is not configured.
      */
     async getAsset(): Promise<B256Address> {
-        return (await this.abi.functions.get_asset().dryRun()).value.bits;
+        return (await this.abi.functions.get_asset().get()).value.bits;
     }
 
     /**
@@ -104,7 +104,7 @@ export class Vrf {
             asset_id = { bits: asset.toString() };
         }
 
-        return (await this.abi.functions.get_fee(asset_id).dryRun()).value;
+        return (await this.abi.functions.get_fee(asset_id).get()).value;
     }
 
     /**
@@ -117,7 +117,7 @@ export class Vrf {
         // TODO: fuels-rs is unable to parse an empty vector (see FuelLabs/fuels-ts#2550)
         try {
             addresses = (
-                await this.abi.functions.get_fulfillment_authorities().dryRun()
+                await this.abi.functions.get_fulfillment_authorities().get()
             ).value.map((x) => x.bits);
         } catch (e) {
             // pass
@@ -137,7 +137,7 @@ export class Vrf {
      * Returns the number of received randomness requests.
      */
     async getNumRequests(): Promise<BN> {
-        return (await this.abi.functions.get_num_requests().dryRun()).value;
+        return (await this.abi.functions.get_num_requests().get()).value;
     }
 
     /**
@@ -150,13 +150,13 @@ export class Vrf {
             return (
                 await this.abi.functions
                     .get_request_by_seed(seedHexOrNum)
-                    .dryRun()
+                    .get()
             ).value;
         } else {
             return (
                 await this.abi.functions
                     .get_request_by_num(seedHexOrNum)
-                    .dryRun()
+                    .get()
             ).value;
         }
     }
