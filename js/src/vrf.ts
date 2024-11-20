@@ -8,8 +8,8 @@ import {
     B256Address,
     AssetId,
 } from "fuels";
-import { VrfImpl } from "./contracts";
-import { Option } from "./contracts/common";
+import {VrfImpl} from "./contracts";
+import {Option} from "./contracts/common";
 import {
     AssetIdInput,
     ContractIdInput,
@@ -49,8 +49,19 @@ export class Vrf {
      */
     constructor(
         walletOrProvider: Account | Provider,
-        id: B256Address | AbstractAddress = MAINNET_CONTRACT_ID
+        id?: B256Address | AbstractAddress,
     ) {
+        if (id === undefined) {
+            let provider = walletOrProvider;
+            if (provider instanceof Account) provider = provider.provider
+            const chainId = provider.getChainId()
+            if (chainId === 9889) {
+                id = MAINNET_CONTRACT_ID
+            } else {
+                id = TESTNET_CONTRACT_ID
+            }
+        }
+
         this.abi = new VrfImpl(id, walletOrProvider);
     }
 
@@ -77,7 +88,7 @@ export class Vrf {
         if ("object" === typeof asset && "bits" in asset) {
             asset_id = asset;
         } else {
-            asset_id = { bits: asset.toString() };
+            asset_id = {bits: asset.toString()};
         }
 
         return (await this.abi.functions.get_balance(asset_id).get()).value;
@@ -101,7 +112,7 @@ export class Vrf {
         if ("object" === typeof asset && "bits" in asset) {
             asset_id = asset;
         } else {
-            asset_id = { bits: asset.toString() };
+            asset_id = {bits: asset.toString()};
         }
 
         return (await this.abi.functions.get_fee(asset_id).get()).value;
@@ -168,13 +179,18 @@ export class Vrf {
      * asset to pay fees, if it is configured (see `getAsset()`). This function
      * will fall back to the base asset.
      *
-     * @returns a pair of seed and request number.
+     * @returns A promise that resolves to an object containing:
+     *          - transactionId: A string representing the ID of the submitted transaction.
+     *          - requestNum: A BN (Big Number) representing the unique identifier for this randomness request.
      */
     async request(
         seedHex: string,
         useAdditionalAsset: boolean = false,
         txParams?: TxParams
-    ): Promise<BN> {
+    ): Promise<{
+        transactionId: string;
+        requestNum: BN;
+    }> {
         let asset = this.abi.provider.getBaseAssetId();
         if (useAdditionalAsset) {
             asset = await this.getAsset();
@@ -184,10 +200,10 @@ export class Vrf {
         if (txParams) {
             call = call.txParams(txParams);
         }
-        call.callParams({ forward: { amount: fee, assetId: asset } });
-        const { waitForResult } = await call.call();
-        const { value } = await waitForResult();
-        return value;
+        call.callParams({forward: {amount: fee, assetId: asset}});
+        const {transactionId, waitForResult} = await call.call();
+        const {value: requestNum} = await waitForResult();
+        return {transactionId, requestNum};
     }
 }
 
@@ -195,8 +211,8 @@ export function toContractIdInput(
     value: B256Address | AbstractAddress
 ): ContractIdInput {
     if ("string" == typeof value) {
-        return { bits: value };
+        return {bits: value};
     } else {
-        return { bits: value.toB256() };
+        return {bits: value.toB256()};
     }
 }

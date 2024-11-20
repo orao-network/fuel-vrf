@@ -1,13 +1,13 @@
-import { describe, expect, test, beforeAll } from "@jest/globals";
-import { Provider, WalletUnlocked, Wallet, randomBytes, hexlify } from "fuels";
-import { TESTNET_CONTRACT_ID, Vrf } from "../src";
+import {describe, expect, test, beforeAll} from "@jest/globals";
+import {Provider, WalletUnlocked, Wallet, randomBytes, hexlify} from "fuels";
+import {TESTNET_CONTRACT_ID, Vrf} from "../src";
 // @ts-ignore
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
 dotenv.config();
 
-const URL = "https://testnet.fuel.network/v1/graphql";
+const URL = "https://devnet.fuel.network/v1/graphql";
 
 let provider: Provider;
 let vrf: Vrf;
@@ -21,6 +21,7 @@ if (!process.env.PRIVATE_KEY) {
 
 beforeAll(async () => {
     provider = await Provider.create(URL);
+    console.log(provider.getChainId())
     const wallet: WalletUnlocked = Wallet.fromPrivateKey(
         process.env.PRIVATE_KEY ?? "",
         provider
@@ -31,10 +32,10 @@ beforeAll(async () => {
 describe("VRF API", () => {
     test("request", async () => {
         let seedHex = hexlify(seed);
-        let requestNum = await vrf.request(seedHex);
+        let {requestNum} = await vrf.request(seedHex);
 
         let response = await vrf.getRequest(requestNum);
-        console.dir(response, { depth: 10 });
+        console.dir(response, {depth: 10});
 
         expect(response).toBeDefined();
         expect(response?.seed).toEqual(seedHex);

@@ -4379,7 +4379,7 @@ dependencies = [
 
 [[package]]
 name = "off-chain"
-version = "0.2.3"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "clap",
@@ -4422,7 +4422,7 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
 name = "orao-fuel-vrf"
-version = "0.2.3"
+version = "0.2.5"
 dependencies = [
  "fuels",
  "thiserror",
@@ -5189,7 +5189,7 @@ dependencies = [
 
 [[package]]
 name = "russian-roulette"
-version = "0.2.3"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "clap",
