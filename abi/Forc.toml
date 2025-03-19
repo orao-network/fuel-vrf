@@ -1,0 +1,5 @@
+[project]
+authors = ["ORAO Network Developers <hello@orao.network>"]
+entry = "lib.sw"
+license = "Apache-2.0"
+name = "vrf_abi"
