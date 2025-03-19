@@ -111,7 +111,10 @@ impl RussianRoulette for Contract {
     #[storage(read)]
     fn status() -> Status {
         let sender = msg_sender().unwrap();
-        storage.player_state.get(sender).try_read().unwrap().status
+        match storage.player_state.get(sender).try_read() {
+            Some(player) => player.status,
+            None => Status::PlayerIsAlive(0),
+        }
     }
 
     #[payable]

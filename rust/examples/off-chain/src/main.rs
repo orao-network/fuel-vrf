@@ -1,10 +1,10 @@
 use std::time::Duration;
 
 use clap::Parser;
-use fuels::types::{Bits256, Bytes32};
 use fuels::prelude::*;
+use fuels::types::{Bits256, Bytes32};
 use indicatif::ProgressBar;
-use orao_fuel_vrf::{Event, Fulfilled, RandomnessState, Vrf, randomness_to_bytes64};
+use orao_fuel_vrf::{randomness_to_bytes64, Event, Fulfilled, RandomnessState, Vrf};
 use tokio::time::timeout;
 
 mod utils;
@@ -12,9 +12,13 @@ mod utils;
 /// Fuel VRF off-chain example.
 #[derive(Debug, Parser)]
 pub struct Args {
-    /// Id of a published VRF contract.
+    /// Id of a published VRF proxy contract.
     #[arg(long, default_value_t = orao_fuel_vrf::TESTNET_CONTRACT_ID)]
     pub contract_id: ContractId,
+
+    /// ID of a published VRF contract.
+    #[arg(long, default_value_t = orao_fuel_vrf::TESTNET_TARGET_CONTRACT_ID)]
+    pub target_contract_id: ContractId,
 
     /// Encrypted keystore path.
     #[arg(long, default_value = "~/.fuel/wallets/.wallet")]
@@ -67,7 +71,7 @@ async fn main() -> anyhow::Result<()> {
 
     eprintln!("Using contract address: {}\n", args.contract_id);
 
-    let instance = Vrf::new(args.contract_id, wallet);
+    let instance = Vrf::new(args.contract_id, Some(args.target_contract_id), wallet);
     let base_asset = instance.get_network_base_asset();
 
     let seed = args.seed.unwrap_or_else(|| rand::random());
@@ -81,7 +85,11 @@ async fn main() -> anyhow::Result<()> {
     let response = instance
         .request(Bits256(*seed))
         .with_tx_policies(TxPolicies::default())
-        .call_params(CallParameters::default().with_amount(fee + 100).with_asset_id(base_asset))?
+        .call_params(
+            CallParameters::default()
+                .with_amount(fee + 100)
+                .with_asset_id(base_asset),
+        )?
         .call()
         .await?;
     progress.suspend(|| {

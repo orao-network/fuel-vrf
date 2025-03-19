@@ -9,6 +9,7 @@ pub use abi::{
 };
 pub use error::Error;
 use fuels::{
+    core::traits::{Parameterize, Tokenizable},
     crypto::Signature,
     prelude::{Account, Address, AssetId, ContractId, Execution, TxPolicies},
     programs::calls::{CallHandler, ContractCall},
@@ -25,26 +26,46 @@ pub const MAINNET_CONTRACT_ID: ContractId = ContractId::new([
     0xa1, 0xa4, 0x15, 0x8f, 0x88, 0x89, 0xa0, 0x5d, 0x30, 0x82, 0xcd, 0xa0, 0xda, 0x05, 0x13, 0x5d,
     0xd2, 0x0c, 0xe6, 0x73, 0x68, 0xa9, 0xca, 0x2b, 0x57, 0x6b, 0x17, 0x04, 0x26, 0xac, 0xf3, 0x73,
 ]);
+pub const MAINNET_TARGET_CONTRACT_ID: ContractId = ContractId::new([
+    0xa1, 0xa4, 0x15, 0x8f, 0x88, 0x89, 0xa0, 0x5d, 0x30, 0x82, 0xcd, 0xa0, 0xda, 0x05, 0x13, 0x5d,
+    0xd2, 0x0c, 0xe6, 0x73, 0x68, 0xa9, 0xca, 0x2b, 0x57, 0x6b, 0x17, 0x04, 0x26, 0xac, 0xf3, 0x73,
+]);
 pub const TESTNET_CONTRACT_ID: ContractId = ContractId::new([
     0x2a, 0x8d, 0x96, 0x91, 0x1b, 0xec, 0xbe, 0x05, 0xb2, 0xa9, 0xf5, 0x25, 0x3c, 0x91, 0x86, 0x5f,
     0x0f, 0x4b, 0x36, 0x5e, 0xd0, 0xe2, 0xab, 0xab, 0x17, 0xa3, 0x5e, 0x9f, 0xc9, 0xc4, 0xac, 0x76,
+]);
+pub const TESTNET_TARGET_CONTRACT_ID: ContractId = ContractId::new([
+    0xa6, 0x01, 0xfb, 0x26, 0x93, 0xb8, 0x63, 0x5f, 0x76, 0x76, 0x9d, 0xef, 0xdc, 0xe6, 0xb9, 0x91,
+    0x49, 0x05, 0x15, 0xdc, 0xc0, 0x80, 0xf0, 0x96, 0x89, 0xa3, 0x3e, 0x70, 0x84, 0x70, 0x32, 0x9f,
 ]);
 
 #[derive(Debug)]
 pub struct Vrf<T: Account> {
     pub abi: abi::bindings::Vrf<T>,
     pub methods: abi::bindings::VrfMethods<T>,
+    pub target_contract_id: Option<ContractId>,
     base_asset: AssetId,
 }
 
 impl<A: Account> Vrf<A> {
-    pub fn new(contract_id: ContractId, wallet: A) -> Self {
+    pub fn new(contract_id: ContractId, target_contract_id: Option<ContractId>, wallet: A) -> Self {
         let abi = abi::bindings::Vrf::new(contract_id, wallet);
         Self {
             base_asset: *abi.account().try_provider().unwrap().base_asset_id(),
+            target_contract_id,
             methods: abi.methods(),
             abi,
         }
+    }
+
+    fn with_target_contract<T: Tokenizable + Parameterize + Debug>(
+        &self,
+        mut call: CallHandler<A, ContractCall, T>,
+    ) -> CallHandler<A, ContractCall, T> {
+        if let Some(contract_id) = self.target_contract_id {
+            call = call.with_contract_ids(&[contract_id.into()]);
+        }
+        call
     }
 
     /// Returns the base asset of the network.
@@ -93,7 +114,7 @@ impl<A: Account> Vrf<A> {
     /// # orao_fuel_vrf::Result::Ok(()) });
     /// ```
     pub fn request(&self, seed: Bits256) -> CallHandler<A, ContractCall, u64> {
-        self.methods.request(seed)
+        self.with_target_contract(self.methods.request(seed))
     }
 
     /// Returns the configured authority.
@@ -103,8 +124,7 @@ impl<A: Account> Vrf<A> {
     /// `None` means that the contract instance is not yet configured.
     pub async fn get_authority(&self) -> Result<Option<Identity>> {
         match self
-            .methods
-            .owner()
+            .with_target_contract(self.methods.owner())
             .simulate(Execution::StateReadOnly)
             .await?
             .value
@@ -119,8 +139,7 @@ impl<A: Account> Vrf<A> {
     /// Use [`AssetId::BASE`] to get base asset fee.
     pub async fn get_fee(&self, asset: AssetId) -> Result<u64> {
         Ok(self
-            .methods
-            .get_fee(asset)
+            .with_target_contract(self.methods.get_fee(asset))
             .simulate(Execution::StateReadOnly)
             .await?
             .value)
@@ -131,8 +150,7 @@ impl<A: Account> Vrf<A> {
     /// Note that it returns the base asset if additional asset is not configured.
     pub async fn get_asset(&self) -> Result<AssetId> {
         Ok(AssetId::new(
-            self.methods
-                .get_asset()
+            self.with_target_contract(self.methods.get_asset())
                 .simulate(Execution::StateReadOnly)
                 .await?
                 .value
@@ -143,8 +161,7 @@ impl<A: Account> Vrf<A> {
     /// Returns configured fulfillment authorities.
     pub async fn get_fulfillment_authorities(&self) -> Result<Vec<Address>> {
         let response = self
-            .methods
-            .get_fulfillment_authorities()
+            .with_target_contract(self.methods.get_fulfillment_authorities())
             .simulate(Execution::StateReadOnly)
             .await?;
         Ok(response.value)
@@ -153,8 +170,7 @@ impl<A: Account> Vrf<A> {
     /// Returns collected fees amount for the given asset.
     pub async fn get_balance(&self, asset: AssetId) -> Result<u64> {
         Ok(self
-            .methods
-            .get_balance(asset)
+            .with_target_contract(self.methods.get_balance(asset))
             .simulate(Execution::StateReadOnly)
             .await?
             .value)
@@ -163,8 +179,7 @@ impl<A: Account> Vrf<A> {
     /// Returns request by its number.
     pub async fn get_request_by_num(&self, num: u64) -> Result<Option<Randomness>> {
         let response = self
-            .methods
-            .get_request_by_num(num)
+            .with_target_contract(self.methods.get_request_by_num(num))
             .simulate(Execution::StateReadOnly)
             .await?;
         Ok(response.value)
@@ -173,8 +188,7 @@ impl<A: Account> Vrf<A> {
     /// Returns request by its seed.
     pub async fn get_request_by_seed(&self, seed: Bits256) -> Result<Option<Randomness>> {
         let response = self
-            .methods
-            .get_request_by_seed(seed)
+            .with_target_contract(self.methods.get_request_by_seed(seed))
             .simulate(Execution::StateReadOnly)
             .await?;
         Ok(response.value)
@@ -183,8 +197,7 @@ impl<A: Account> Vrf<A> {
     /// Returns the number of performed requests.
     pub async fn get_num_requests(&self) -> Result<u64> {
         Ok(self
-            .methods
-            .get_num_requests()
+            .with_target_contract(self.methods.get_num_requests())
             .simulate(Execution::StateReadOnly)
             .await?
             .value)
@@ -195,12 +208,12 @@ impl<A: Account> Vrf<A> {
     // TODO: 15.03.2024. this should be refactored using ReceiptParser
     pub async fn get_status(&self) -> Result<Status> {
         let mut call = CallHandler::new_multi_call(self.abi.account())
-            .add_call(self.methods.owner())
-            .add_call(self.methods.get_balance(self.base_asset))
-            .add_call(self.methods.get_fee(self.base_asset))
-            .add_call(self.methods.get_asset())
-            .add_call(self.methods.get_fulfillment_authorities())
-            .add_call(self.methods.get_num_requests())
+            .add_call(self.with_target_contract(self.methods.owner()))
+            .add_call(self.with_target_contract(self.methods.get_balance(self.base_asset)))
+            .add_call(self.with_target_contract(self.methods.get_fee(self.base_asset)))
+            .add_call(self.with_target_contract(self.methods.get_asset()))
+            .add_call(self.with_target_contract(self.methods.get_fulfillment_authorities()))
+            .add_call(self.with_target_contract(self.methods.get_num_requests()))
             .with_tx_policies(TxPolicies::default().with_script_gas_limit(10_000_000));
 
         let response = call
@@ -210,8 +223,8 @@ impl<A: Account> Vrf<A> {
 
         let additional_asset = if asset != self.base_asset {
             let mut call = CallHandler::new_multi_call(self.abi.account())
-                .add_call(self.methods.get_balance(asset))
-                .add_call(self.methods.get_fee(asset));
+                .add_call(self.with_target_contract(self.methods.get_balance(asset)))
+                .add_call(self.with_target_contract(self.methods.get_fee(asset)));
             let response = call
                 .simulate::<(u64, u64)>(Execution::StateReadOnly)
                 .await?;
