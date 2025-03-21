@@ -40,7 +40,7 @@ impl FulfillersKeys {
         let mut keys = self.keys;
         let mut i: u64 = 0;
         while i < MAX_FULFILLERS {
-            if keys[i].bits() == ZERO_B256 {
+            if keys[i].bits() == b256::zero() {
                 keys[i] = authority;
                 self.keys = keys;
                 return Some(i + 1_u64);

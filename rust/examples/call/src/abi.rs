@@ -1,7 +1,5 @@
-use fuels::{
-    prelude::{Account, CallParameters, Execution, TxPolicies},
-    types::Bits256,
-};
+use fuels::{prelude::*, types::Bits256};
+use orao_fuel_vrf::{Vrf, TESTNET_CONTRACT_ID};
 
 pub mod bindings {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -19,10 +17,10 @@ impl bindings::Status {
 
 impl<T: Account> bindings::RussianRoulette<T> {
     /// Helper that calls `status` on a russian roulette instance.
-    pub async fn status(&self) -> anyhow::Result<bindings::Status> {
+    pub async fn status(&self, address: Address) -> anyhow::Result<bindings::Status> {
         Ok(self
             .methods()
-            .status()
+            .status(address)
             .simulate(Execution::StateReadOnly)
             .await?
             .value)
@@ -30,6 +28,13 @@ impl<T: Account> bindings::RussianRoulette<T> {
 
     /// Helper that calls `spin_and_pull_the_trigger` on a russian roulette instance.
     pub async fn spin_and_pull_the_trigger(&self) -> anyhow::Result<()> {
+        let account = ImpersonatedAccount::new(
+            Bech32Address::default(),
+            Some(self.account().try_provider().unwrap().clone()),
+        );
+        let vrf = Vrf::new(TESTNET_CONTRACT_ID, account).await;
+        let contract_ids = vrf.contract_ids();
+
         // using random "force" - generates a boolean
         let force = rand::random();
 
@@ -37,10 +42,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
         let fee = self
             .methods()
             .round_cost()
-            .with_contract_ids(&[
-                orao_fuel_vrf::TESTNET_CONTRACT_ID.into(),
-                orao_fuel_vrf::TESTNET_TARGET_CONTRACT_ID.into(),
-            ])
+            .with_contract_ids(&contract_ids)
             .simulate(Execution::StateReadOnly)
             .await?
             .value;
@@ -50,12 +52,9 @@ impl<T: Account> bindings::RussianRoulette<T> {
         self.methods()
             .spin_and_pull_the_trigger(Bits256(force))
             // this is necessary, because our contract calls VRF contract
-            .with_contract_ids(&[
-                orao_fuel_vrf::TESTNET_CONTRACT_ID.into(),
-                orao_fuel_vrf::TESTNET_TARGET_CONTRACT_ID.into(),
-            ])
+            .with_contract_ids(&contract_ids)
             .with_tx_policies(TxPolicies::default())
-            .call_params(CallParameters::default().with_amount(fee + 100))? // fee + CALLBACK_FEE
+            .call_params(CallParameters::default().with_amount(fee + 10000))? // fee + CALLBACK_FEE
             .call()
             .await?;
 

@@ -1,8 +1,4 @@
 [[package]]
-name = "core"
-source = "path+from-root-2E654A91A5A21ADE"
-
-[[package]]
 name = "russian-roulette"
 source = "member"
 dependencies = [
@@ -12,8 +8,7 @@ dependencies = [
 
 [[package]]
 name = "std"
-source = "git+https://github.com/fuellabs/sway?tag=v0.66.6#986aee2c1e34c9cd958c81e7fd6b84638b26619b"
-dependencies = ["core"]
+source = "git+https://github.com/fuellabs/sway?tag=v0.67.0#d821dcb0c7edb1d6e2a772f5a1ccefe38902eaec"
 
 [[package]]
 name = "vrf_abi"

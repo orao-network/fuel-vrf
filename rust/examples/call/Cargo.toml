@@ -10,11 +10,11 @@ edition.workspace = true
 [dependencies]
 anyhow = "1"
 clap = { version = "4", features = ["derive", "env"] }
-eth-keystore = "0.4"
+eth-keystore = "0.5.0"
 fuels.workspace = true
 indicatif = "0.17"
 orao-fuel-vrf = { version = "0.2.0", path = "../../sdk" }
 rand = "0.8"
 rpassword = "7.0.0"
-shellexpand = "2.1.2"
+shellexpand = "3.1.0"
 tokio = { version = "1.15", features = ["rt", "macros", "time"] }

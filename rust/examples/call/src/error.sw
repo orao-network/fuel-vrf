@@ -10,4 +10,5 @@ pub enum Error {
     UnknownSeed: (),
     PlayerNotFound: (),
     SeedMismatch: (),
+    OnlyVrfCanFulfill: (),
 }

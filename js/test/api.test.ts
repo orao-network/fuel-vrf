@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
-const URL = "https://devnet.fuel.network/v1/graphql";
+const URL = "https://testnet.fuel.network/v1/graphql";
 
 let provider: Provider;
 let vrf: Vrf;

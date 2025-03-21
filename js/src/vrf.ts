@@ -19,7 +19,7 @@ import {
 
 /** Deployed contract address */
 export const MAINNET_CONTRACT_ID =
-    "0xa1a4158f8889a05d3082cda0da05135dd20ce67368a9ca2b576b170426acf373";
+    "0xf0b0fcded2b3dcbc529d611300b904df97bf473240ce4679993e418b36b3e8d0";
 export const TESTNET_CONTRACT_ID =
     "0x2a8d96911becbe05b2a9f5253c91865f0f4b365ed0e2abab17a35e9fc9c4ac76";
 

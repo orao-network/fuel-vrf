@@ -11,7 +11,7 @@ pub use error::Error;
 use fuels::{
     core::traits::{Parameterize, Tokenizable},
     crypto::Signature,
-    prelude::{Account, Address, AssetId, ContractId, Execution, TxPolicies},
+    prelude::*,
     programs::calls::{CallHandler, ContractCall},
     types::{Bits256, Identity},
 };
@@ -23,39 +23,56 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 pub const MAX_AUTHORITIES: usize = 10;
 pub const MAINNET_CONTRACT_ID: ContractId = ContractId::new([
-    0xa1, 0xa4, 0x15, 0x8f, 0x88, 0x89, 0xa0, 0x5d, 0x30, 0x82, 0xcd, 0xa0, 0xda, 0x05, 0x13, 0x5d,
-    0xd2, 0x0c, 0xe6, 0x73, 0x68, 0xa9, 0xca, 0x2b, 0x57, 0x6b, 0x17, 0x04, 0x26, 0xac, 0xf3, 0x73,
-]);
-pub const MAINNET_TARGET_CONTRACT_ID: ContractId = ContractId::new([
-    0xa1, 0xa4, 0x15, 0x8f, 0x88, 0x89, 0xa0, 0x5d, 0x30, 0x82, 0xcd, 0xa0, 0xda, 0x05, 0x13, 0x5d,
-    0xd2, 0x0c, 0xe6, 0x73, 0x68, 0xa9, 0xca, 0x2b, 0x57, 0x6b, 0x17, 0x04, 0x26, 0xac, 0xf3, 0x73,
+    0xf0, 0xb0, 0xfc, 0xde, 0xd2, 0xb3, 0xdc, 0xbc, 0x52, 0x9d, 0x61, 0x13, 0x00, 0xb9, 0x04, 0xdf,
+    0x97, 0xbf, 0x47, 0x32, 0x40, 0xce, 0x46, 0x79, 0x99, 0x3e, 0x41, 0x8b, 0x36, 0xb3, 0xe8, 0xd0,
 ]);
 pub const TESTNET_CONTRACT_ID: ContractId = ContractId::new([
     0x2a, 0x8d, 0x96, 0x91, 0x1b, 0xec, 0xbe, 0x05, 0xb2, 0xa9, 0xf5, 0x25, 0x3c, 0x91, 0x86, 0x5f,
     0x0f, 0x4b, 0x36, 0x5e, 0xd0, 0xe2, 0xab, 0xab, 0x17, 0xa3, 0x5e, 0x9f, 0xc9, 0xc4, 0xac, 0x76,
-]);
-pub const TESTNET_TARGET_CONTRACT_ID: ContractId = ContractId::new([
-    0xa6, 0x01, 0xfb, 0x26, 0x93, 0xb8, 0x63, 0x5f, 0x76, 0x76, 0x9d, 0xef, 0xdc, 0xe6, 0xb9, 0x91,
-    0x49, 0x05, 0x15, 0xdc, 0xc0, 0x80, 0xf0, 0x96, 0x89, 0xa3, 0x3e, 0x70, 0x84, 0x70, 0x32, 0x9f,
 ]);
 
 #[derive(Debug)]
 pub struct Vrf<T: Account> {
     pub abi: abi::bindings::Vrf<T>,
     pub methods: abi::bindings::VrfMethods<T>,
+    pub contract_id: ContractId,
     pub target_contract_id: Option<ContractId>,
-    base_asset: AssetId,
 }
 
 impl<A: Account> Vrf<A> {
-    pub fn new(contract_id: ContractId, target_contract_id: Option<ContractId>, wallet: A) -> Self {
+    pub async fn new(contract_id: ContractId, wallet: A) -> Self {
         let abi = abi::bindings::Vrf::new(contract_id, wallet);
+        let proxy_abi = abi::bindings::Proxy::new(
+            contract_id,
+            ImpersonatedAccount::new(
+                Bech32Address::default(),
+                Some(abi.account().try_provider().unwrap().clone()),
+            ),
+        );
+        let target_contract_id = match proxy_abi
+            .methods()
+            .proxy_target()
+            .simulate(Execution::StateReadOnly)
+            .await
+        {
+            Ok(result) => result.value,
+            Err(_) => None,
+        };
+
         Self {
-            base_asset: *abi.account().try_provider().unwrap().base_asset_id(),
+            contract_id,
             target_contract_id,
             methods: abi.methods(),
             abi,
         }
+    }
+
+    pub fn contract_ids(&self) -> Vec<Bech32ContractId> {
+        let mut ids = vec![self.contract_id.into()];
+        if let Some(target_id) = self.target_contract_id {
+            ids.push(target_id.into());
+        }
+        ids
     }
 
     fn with_target_contract<T: Tokenizable + Parameterize + Debug>(
@@ -66,13 +83,6 @@ impl<A: Account> Vrf<A> {
             call = call.with_contract_ids(&[contract_id.into()]);
         }
         call
-    }
-
-    /// Returns the base asset of the network.
-    ///
-    /// It is a part of the network's consensus config.
-    pub fn get_network_base_asset(&self) -> AssetId {
-        self.base_asset
     }
 
     /// Performs the randomness request.
@@ -88,7 +98,8 @@ impl<A: Account> Vrf<A> {
     /// # let instance: orao_fuel_vrf::Vrf<WalletUnlocked> = panic!();
     ///
     /// // Let's try to pay with additional asset with fallback to the base asset
-    /// let network_base_asset = instance.get_network_base_asset();
+    /// let consensus_parameters = instance.abi.account().try_provider()?.consensus_parameters().await?;
+    /// let network_base_asset = *consensus_parameters.base_asset_id();
     /// let asset = instance.get_asset().await?;
     /// let fee = instance.get_fee(asset).await?;
     ///
@@ -207,10 +218,17 @@ impl<A: Account> Vrf<A> {
     // TODO: Clean this up as soon as FuelLabs/fuels-rs#914 is fixed
     // TODO: 15.03.2024. this should be refactored using ReceiptParser
     pub async fn get_status(&self) -> Result<Status> {
+        let consensus_parameters = self
+            .abi
+            .account()
+            .try_provider()?
+            .consensus_parameters()
+            .await?;
+        let base_asset_id = consensus_parameters.base_asset_id();
         let mut call = CallHandler::new_multi_call(self.abi.account())
             .add_call(self.with_target_contract(self.methods.owner()))
-            .add_call(self.with_target_contract(self.methods.get_balance(self.base_asset)))
-            .add_call(self.with_target_contract(self.methods.get_fee(self.base_asset)))
+            .add_call(self.with_target_contract(self.methods.get_balance(base_asset_id.clone())))
+            .add_call(self.with_target_contract(self.methods.get_fee(base_asset_id.clone())))
             .add_call(self.with_target_contract(self.methods.get_asset()))
             .add_call(self.with_target_contract(self.methods.get_fulfillment_authorities()))
             .add_call(self.with_target_contract(self.methods.get_num_requests()))
@@ -221,7 +239,7 @@ impl<A: Account> Vrf<A> {
             .await?;
         let asset = response.value.3;
 
-        let additional_asset = if asset != self.base_asset {
+        let additional_asset = if asset != *base_asset_id {
             let mut call = CallHandler::new_multi_call(self.abi.account())
                 .add_call(self.with_target_contract(self.methods.get_balance(asset)))
                 .add_call(self.with_target_contract(self.methods.get_fee(asset)));

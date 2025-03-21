@@ -2,11 +2,11 @@
 
 This is a demo game that utilizes ORAO's VRF contract to get on-chain randomness. It is written in Sway and published on the testnet.
 
-Contract ID is `0xc4b2522df1ca4bdc613e6d8b6d4ac0ce01f9068366a0ebca346d09c98b83aa8e` which is also defined as `CONTRACT_ID` in src/main.rs.
+Contract ID is `0xf8901803c134031f690fa0a8c840081910ca0348d9c336248c8697f16521a991` which is also defined as `CONTRACT_ID` in src/main.rs.
 
 ## Requirements
 
--   requires forc 0.66.6 to build (see build.rs)
+-   requires forc 0.67.0 to build (see build.rs)
 -   uses `forc-wallet`-generated wallets
 
 ## Implementing VRF Consumer

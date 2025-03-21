@@ -28,7 +28,7 @@ const VRF_ID = 0x2a8d96911becbe05b2a9f5253c91865f0f4b365ed0e2abab17a35e9fc9c4ac7
 abi RussianRoulette {
     fn round_cost() -> u64;
     #[storage(read)]
-    fn status() -> Status;
+    fn status(player: Address) -> Status;
     #[payable]
     #[storage(read, write)]
     fn spin_and_pull_the_trigger(force: b256);
@@ -63,16 +63,25 @@ pub struct PlayerState {
     status: Status,
 }
 
-const CALLBACK_FEE = 100;
-
 storage {
     player_state: StorageMap<Identity, PlayerState> = StorageMap {},
     force_to_player: StorageMap<b256, Identity> = StorageMap {},
 }
 
+fn only_vrf() {
+    let vrf_id = Identity::ContractId(ContractId::from(VRF_ID));
+    if msg_sender().unwrap() != vrf_id {
+        log(Error::OnlyVrfCanFulfill);
+        revert(3);
+    }
+}
+
 impl Consumer for Contract {
     #[storage(read, write)]
     fn fulfill_randomness(seed: b256, randomness: B512) {
+        // Restrict access to only the VRF contract
+        only_vrf();
+
         // Retrieve the player associated with the seed
         let player_id = match storage.force_to_player.get(seed).try_read() {
             Some(id) => id,
@@ -95,7 +104,10 @@ impl Consumer for Contract {
         let outcome = RoundOutcome::derive(randomness);
         let status = match outcome {
             RoundOutcome::Bang => Status::PlayerIsDead(player.rounds),
-            _ => Status::PlayerIsAlive(player.rounds),
+            _ => {
+                // transfer(player_id, AssetId::base(), AMOUNT);
+                Status::PlayerIsAlive(player.rounds)
+            },
         };
         player.status = status;
 
@@ -109,10 +121,9 @@ impl RussianRoulette for Contract {
     }
 
     #[storage(read)]
-    fn status() -> Status {
-        let sender = msg_sender().unwrap();
-        match storage.player_state.get(sender).try_read() {
-            Some(player) => player.status,
+    fn status(player: Address) -> Status {
+        match storage.player_state.get(Identity::Address(player)).try_read() {
+            Some(player_state) => player_state.status,
             None => Status::PlayerIsAlive(0),
         }
     }
@@ -146,7 +157,7 @@ impl RussianRoulette for Contract {
         let vrf = abi(Vrf, VRF_ID);
 
         let fee = vrf.get_fee(AssetId::base());
-        if fee + CALLBACK_FEE != amount {
+        if fee > amount {
             log(Error::InvalidAmount);
             revert(2);
         }

@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 
 /*
-  Fuels version: 0.99.0
+  Fuels version: 0.100.1
 */
 
 import { Contract as __Contract, Interface } from "fuels";
@@ -898,15 +898,15 @@ const abi = {
 
 const storageSlots: StorageSlot[] = [
   {
-    "key": "7665901a6526e8582efbdd717856a5f8de5f79fa9a784e46e257f28a0e6e8874",
+    "key": "3f0d459d453d9707177364b582f13c78d2eabdbcfeb8f48c9639bbacfe8c65df",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "7665901a6526e8582efbdd717856a5f8de5f79fa9a784e46e257f28a0e6e8875",
+    "key": "3f0d459d453d9707177364b582f13c78d2eabdbcfeb8f48c9639bbacfe8c65e0",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "cb57619ef4cf6a36dd1a38e9f97ed6374a9223d15114ad375c2525a5b2562ea5",
+    "key": "600b8ed89dc64b75413ec5ed37eb34c3763d8ca966b3093a90af11ff47d6a4df",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   }
 ];

@@ -8,8 +8,8 @@ use tokio::time::timeout;
 use crate::abi::bindings::Status;
 
 pub const CONTRACT_ID: ContractId = ContractId::new([
-    0xc4, 0xb2, 0x52, 0x2d, 0xf1, 0xca, 0x4b, 0xdc, 0x61, 0x3e, 0x6d, 0x8b, 0x6d, 0x4a, 0xc0, 0xce,
-    0x01, 0xf9, 0x06, 0x83, 0x66, 0xa0, 0xeb, 0xca, 0x34, 0x6d, 0x09, 0xc9, 0x8b, 0x83, 0xaa, 0x8e,
+    0xf8, 0x90, 0x18, 0x03, 0xc1, 0x34, 0x03, 0x1f, 0x69, 0x0f, 0xa0, 0xa8, 0xc8, 0x40, 0x08, 0x19,
+    0x10, 0xca, 0x03, 0x48, 0xd9, 0xc3, 0x36, 0x24, 0x8c, 0x86, 0x97, 0xf1, 0x65, 0x21, 0xa9, 0x91,
 ]);
 
 mod abi;
@@ -65,11 +65,12 @@ async fn main() -> anyhow::Result<()> {
     eprintln!("Contract address: {}\n", args.contract_id);
 
     let wallet = WalletUnlocked::new_from_private_key(secret_key, Some(provider));
-    eprintln!("Player address: {}", Address::from(wallet.address()));
+    let address = Address::from(wallet.address());
+    eprintln!("Player address: {}", address.clone());
 
     let instance = abi::bindings::RussianRoulette::new(args.contract_id, wallet);
 
-    let status = instance.status().await?;
+    let status = instance.status(address).await?;
 
     let prev_round = match status {
         Status::PlayerIsDead(x) => {
@@ -87,14 +88,14 @@ async fn main() -> anyhow::Result<()> {
     };
 
     let progress = ProgressBar::new_spinner();
-    progress.enable_steady_tick(std::time::Duration::from_millis(120));
+    progress.enable_steady_tick(Duration::from_millis(120));
     progress.set_message("Round started..");
 
     instance.spin_and_pull_the_trigger().await?;
 
     progress.set_message("Waiting for round to finish..");
     loop {
-        let status = instance.status().await?;
+        let status = instance.status(address.clone()).await?;
         if status.round() <= prev_round {
             // current round is not yet visible
             continue;
