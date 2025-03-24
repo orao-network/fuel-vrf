@@ -1,6 +1,6 @@
 {
   "name": "@orao-network/fuel-vrf",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "ORAO VRF SDK Verifiable Random Function for the Fuel Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,9 @@
     "on-chain",
     "random",
     "number",
-    "generator"
+    "generator",
+    "fuel-callback",
+    "casino"
   ],
   "bugs": {
     "url": "https://github.com/orao-network/fuel-vrf/issues"

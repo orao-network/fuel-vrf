@@ -1,8 +1,34 @@
 # Russian Roulette Smart Contract
 
-This is a demo game that utilizes ORAO's VRF contract to get on-chain randomness. It is written in Sway and published on the testnet.
+This is an on-chain Russian Roulette game leveraging ORAO's VRF for verifiable randomness. Written in Sway and deployed on Fuel testnet.
 
-Contract ID is `0xf8901803c134031f690fa0a8c840081910ca0348d9c336248c8697f16521a991` which is also defined as `CONTRACT_ID` in src/main.rs.
+**Contract ID**: `0x781885a2b73c32f6cb879d3119ddae052c6f8bc828595c4b91531afa7e64a783`
+
+## Game Mechanics
+
+### Key Features:
+
+1. **Provably Fair**: Uses ORAO VRF (0x2a8d96..c4ac76) for cryptographic randomness
+2. **Risk Management**:
+    - Max bet limit of 1,000,000 base asset
+    - Automatic refunds for over-bets
+3. **Transparent Odds**:
+    - 1/6 chance of losing (16.67%)
+    - 5/6 chance of doubling your bet
+4. **Instant Payouts**: Winnings automatically transferred on successful rounds
+
+### How to Play:
+
+1. Call the `spin_and_pull_the_trigger` function with your desired bet amount and a unique force value.
+2. The contract will process your bet, spin the virtual cylinder, and pull the trigger.
+3. The outcome is determined by the VRF and processed in the `fulfill_randomness` function.
+4. If you survive, you receive double your bet. If not, you lose your entire bet.
+
+### Safety Features:
+
+- Maximum bet limit to prevent excessive losses.
+- Automatic refund of excess bets above the maximum limit.
+- VRF integration ensures fair and unpredictable outcomes.
 
 ## Requirements
 

@@ -3,6 +3,9 @@ contract;
 mod error;
 
 use std::{
+    asset::{
+        transfer,
+    },
     auth::msg_sender,
     b512::B512,
     call_frames::msg_asset_id,
@@ -10,6 +13,7 @@ use std::{
         ZERO_B256,
     },
     context::{
+        balance_of,
         msg_amount,
     },
     identity::Identity,
@@ -23,7 +27,9 @@ use error::Error;
 
 use vrf_abi::{randomness::{Fulfilled, Randomness, RandomnessState}, Vrf, Consumer};
 
-const VRF_ID = 0x2a8d96911becbe05b2a9f5253c91865f0f4b365ed0e2abab17a35e9fc9c4ac76;
+const VRF_ID: b256 = 0x2a8d96911becbe05b2a9f5253c91865f0f4b365ed0e2abab17a35e9fc9c4ac76;
+const THRESHOLD: b256 = 0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa; // 1/6 of max b256 value
+const MAX_BET: u64 = 1_000_000;
 
 abi RussianRoulette {
     fn round_cost() -> u64;
@@ -31,7 +37,7 @@ abi RussianRoulette {
     fn status(player: Address) -> Status;
     #[payable]
     #[storage(read, write)]
-    fn spin_and_pull_the_trigger(force: b256);
+    fn spin_and_pull_the_trigger(force: b256, bet_amount: u64);
 }
 
 enum RoundOutcome {
@@ -42,7 +48,7 @@ enum RoundOutcome {
 impl RoundOutcome {
     fn derive(random: B512) -> Self {
         // roughly 1/6 chance
-        if random.bits()[0] <= 0x2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        if random.bits()[0] <= THRESHOLD
         {
             RoundOutcome::Bang
         } else {
@@ -58,9 +64,9 @@ enum Status {
 }
 
 pub struct PlayerState {
-    player: Identity,
     rounds: u64,
     status: Status,
+    bet_amount: u64,
 }
 
 storage {
@@ -104,12 +110,19 @@ impl Consumer for Contract {
         let outcome = RoundOutcome::derive(randomness);
         let status = match outcome {
             RoundOutcome::Bang => Status::PlayerIsDead(player.rounds),
-            _ => {
-                // transfer(player_id, AssetId::base(), AMOUNT);
+            RoundOutcome::Click => {
+                // Player survives, return their bet
+                let mut payout = player.bet_amount * 2;
+                let balance = balance_of(ContractId::this(), AssetId::base());
+                if balance < payout {
+                    payout = balance;
+                }
+                transfer(player_id, AssetId::base(), payout);
                 Status::PlayerIsAlive(player.rounds)
             },
         };
         player.status = status;
+        player.bet_amount = 0; // Reset bet amount
 
         storage.player_state.insert(player_id, player);
     }
@@ -130,26 +143,38 @@ impl RussianRoulette for Contract {
 
     #[payable]
     #[storage(read, write)]
-    fn spin_and_pull_the_trigger(force: b256) {
+    fn spin_and_pull_the_trigger(force: b256, bet_amount: u64) {
         let sender = msg_sender().unwrap();
-        let amount = msg_amount();
+        let mut amount = msg_amount();
 
         if msg_asset_id() != AssetId::base() {
             log(Error::InvalidAsset);
             revert(2);
         }
 
+        // Make sure that if the player bets higher than max bet that it's ignored and that it only takes the max_bet and the rest is returned
+        let bet_amount = if bet_amount > MAX_BET {
+            // Return excess funds to the player
+            let refund = bet_amount - MAX_BET;
+            transfer(sender, AssetId::base(), refund);
+            amount = amount - refund;
+            MAX_BET
+        } else {
+            bet_amount
+        };
+
         let mut player = match storage.player_state.get(sender).try_read() {
             Some(player) => player,
             None => PlayerState {
-                player: sender,
                 rounds: 0,
                 status: Status::PlayerIsAlive(0),
+                bet_amount: 0,
             },
         };
 
         player.rounds += 1;
         player.status = Status::SpinningBarrel(player.rounds);
+        player.bet_amount = bet_amount;
 
         storage.player_state.insert(sender, player);
         storage.force_to_player.insert(force, sender);
@@ -157,14 +182,14 @@ impl RussianRoulette for Contract {
         let vrf = abi(Vrf, VRF_ID);
 
         let fee = vrf.get_fee(AssetId::base());
-        if fee > amount {
+        if fee + bet_amount > amount {
             log(Error::InvalidAmount);
             revert(2);
         }
 
         let _ = vrf.request {
             asset_id: AssetId::base().bits(),
-            coins: amount,
+            coins: amount - bet_amount,
         }(force);
     }
 }

@@ -27,7 +27,7 @@ impl<T: Account> bindings::RussianRoulette<T> {
     }
 
     /// Helper that calls `spin_and_pull_the_trigger` on a russian roulette instance.
-    pub async fn spin_and_pull_the_trigger(&self) -> anyhow::Result<()> {
+    pub async fn spin_and_pull_the_trigger(&self, bet_amount: u64) -> anyhow::Result<()> {
         let account = ImpersonatedAccount::new(
             Bech32Address::default(),
             Some(self.account().try_provider().unwrap().clone()),
@@ -50,11 +50,11 @@ impl<T: Account> bindings::RussianRoulette<T> {
         println!("VRF fee is: {:?}", fee);
 
         self.methods()
-            .spin_and_pull_the_trigger(Bits256(force))
+            .spin_and_pull_the_trigger(Bits256(force), bet_amount)
             // this is necessary, because our contract calls VRF contract
             .with_contract_ids(&contract_ids)
             .with_tx_policies(TxPolicies::default())
-            .call_params(CallParameters::default().with_amount(fee + 10000))? // fee + CALLBACK_FEE
+            .call_params(CallParameters::default().with_amount(bet_amount + fee + 10000))? // fee + CALLBACK_FEE
             .call()
             .await?;
 

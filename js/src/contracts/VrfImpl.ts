@@ -672,10 +672,6 @@ const abi = {
         {
           "name": "signature",
           "concreteTypeId": "745e252e80bec590efc3999ae943f07ccea4d5b45b00bb6575499b64abdd3322"
-        },
-        {
-          "name": "gas_price",
-          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ],
       "name": "fulfill",
@@ -943,7 +939,7 @@ export class VrfImpl extends __Contract {
     owner: InvokeFunction<[], StateOutput>;
     configure: InvokeFunction<[authority: IdentityInput, fee: BigNumberish, fulfillment_authorities: Vec<AddressInput>], void>;
     configure_asset: InvokeFunction<[asset: AssetIdInput, fee: BigNumberish], void>;
-    fulfill: InvokeFunction<[seed: string, signature: string, gas_price: BigNumberish], void>;
+    fulfill: InvokeFunction<[seed: string, signature: string], void>;
     get_asset: InvokeFunction<[], AssetIdOutput>;
     get_balance: InvokeFunction<[asset: AssetIdInput], BN>;
     get_fee: InvokeFunction<[asset: AssetIdInput], BN>;
