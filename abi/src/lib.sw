@@ -29,6 +29,9 @@ abi Vrf {
     #[payable]
     #[storage(read, write)]
     fn request(seed: b256) -> u64;
+
+    #[storage(read, write)]
+    fn execute_callback(seed: b256);
 }
 
 abi Consumer {

@@ -25,7 +25,7 @@ use std::hash::Hash;
 
 use error::Error;
 
-use vrf_abi::{randomness::{Fulfilled, Randomness, RandomnessState}, Vrf, Consumer};
+pub use vrf_abi::{randomness::{Fulfilled, Randomness, RandomnessState, Unfulfilled}, Vrf, Consumer};
 
 const VRF_ID: b256 = 0x2a8d96911becbe05b2a9f5253c91865f0f4b365ed0e2abab17a35e9fc9c4ac76;
 const THRESHOLD: b256 = 0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa; // 1/6 of max b256 value
@@ -35,6 +35,10 @@ abi RussianRoulette {
     fn round_cost() -> u64;
     #[storage(read)]
     fn status(player: Address) -> Status;
+    #[storage(read)]
+    fn randomness_status(player: Address) -> RandomnessState;
+    #[storage(read)]
+    fn execute_callback();
     #[payable]
     #[storage(read, write)]
     fn spin_and_pull_the_trigger(force: b256, bet_amount: u64);
@@ -64,6 +68,7 @@ enum Status {
 }
 
 pub struct PlayerState {
+    force: b256,
     rounds: u64,
     status: Status,
     bet_amount: u64,
@@ -141,6 +146,37 @@ impl RussianRoulette for Contract {
         }
     }
 
+    #[storage(read)]
+    fn randomness_status(player: Address) -> RandomnessState {
+        match storage.player_state.get(Identity::Address(player)).try_read() {
+            Some(player_state) => {
+                match abi(Vrf, VRF_ID).get_request_by_seed(player_state.force) {
+                    Some(randomness) => randomness.state,
+                    None => RandomnessState::Unfulfilled(Unfulfilled::new()),
+                }
+            },
+            None => RandomnessState::Unfulfilled(Unfulfilled::new()),
+        }
+    }
+
+    // Callback can be manually executed after fulfillment of randomness.
+    #[storage(read)]
+    fn execute_callback() {
+        let sender = msg_sender().unwrap();
+
+        // Retrieve the player's state
+        let mut player = match storage.player_state.get(sender).try_read() {
+            Some(p) => p,
+            None => {
+                log(Error::PlayerNotFound);
+                return;
+            }
+        };
+
+        let vrf = abi(Vrf, VRF_ID);
+        vrf.execute_callback(player.force);
+    }
+
     #[payable]
     #[storage(read, write)]
     fn spin_and_pull_the_trigger(force: b256, bet_amount: u64) {
@@ -166,12 +202,14 @@ impl RussianRoulette for Contract {
         let mut player = match storage.player_state.get(sender).try_read() {
             Some(player) => player,
             None => PlayerState {
+                force,
                 rounds: 0,
                 status: Status::PlayerIsAlive(0),
                 bet_amount: 0,
             },
         };
 
+        player.force = force;
         player.rounds += 1;
         player.status = Status::SpinningBarrel(player.rounds);
         player.bet_amount = bet_amount;

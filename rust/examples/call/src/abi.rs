@@ -26,6 +26,49 @@ impl<T: Account> bindings::RussianRoulette<T> {
             .value)
     }
 
+    /// Helper that calls `randomness_status` on a russian roulette instance.
+    pub async fn randomness_status(
+        &self,
+        address: Address,
+    ) -> anyhow::Result<bindings::RandomnessState> {
+        let account = ImpersonatedAccount::new(
+            Bech32Address::default(),
+            Some(self.account().try_provider().unwrap().clone()),
+        );
+        let vrf = Vrf::new(TESTNET_CONTRACT_ID, account).await;
+        let contract_ids = vrf.contract_ids();
+
+        Ok(self
+            .methods()
+            .randomness_status(address)
+            .with_contract_ids(&contract_ids)
+            .simulate(Execution::StateReadOnly)
+            .await?
+            .value)
+    }
+
+    /// Helper that calls `execute_callback` on a russian roulette instance.
+    pub async fn execute_callback(&self) -> anyhow::Result<()> {
+        let account = ImpersonatedAccount::new(
+            Bech32Address::default(),
+            Some(self.account().try_provider().unwrap().clone()),
+        );
+        let vrf = Vrf::new(TESTNET_CONTRACT_ID, account).await;
+        let mut contract_ids = vrf.contract_ids();
+        contract_ids.push(crate::CONTRACT_ID.into());
+
+        self.methods()
+            .execute_callback()
+            // this is necessary, because our contract calls VRF contract
+            .with_contract_ids(&contract_ids)
+            // https://docs.fuel.network/docs/fuels-rs/calling-contracts/variable-outputs/
+            .with_variable_output_policy(VariableOutputPolicy::Exactly(1))
+            .call()
+            .await?;
+
+        Ok(())
+    }
+
     /// Helper that calls `spin_and_pull_the_trigger` on a russian roulette instance.
     pub async fn spin_and_pull_the_trigger(&self, bet_amount: u64) -> anyhow::Result<()> {
         let account = ImpersonatedAccount::new(

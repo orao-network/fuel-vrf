@@ -31,6 +31,7 @@ impl fmt::Display for bindings::Error {
             crate::ContractError::InvalidResponse => "randomness response is invalid",
             crate::ContractError::Responded => "an authority is already responded",
             crate::ContractError::Fulfilled => "request is fulfilled",
+            crate::ContractError::UnFulfilled => "request is unfulfilled",
         };
         f.write_str(msg)
     }
@@ -49,6 +50,7 @@ impl bindings::Event {
             crate::Event::Response(bindings::Response { seed, .. }) => seed,
             crate::Event::Request(bindings::Request { seed, .. }) => seed,
             crate::Event::Reset(bindings::Reset { seed }) => seed,
+            crate::Event::Callback(bindings::Callback { seed, .. }) => seed,
         }
     }
 }
@@ -60,6 +62,7 @@ impl fmt::Display for bindings::Event {
             bindings::Event::Request(x) => write!(f, "Event: {}", x),
             bindings::Event::Response(x) => write!(f, "Event: {}", x),
             bindings::Event::Reset(x) => write!(f, "Event: {}", x),
+            bindings::Event::Callback(x) => write!(f, "Event: {}", x),
         }
     }
 }
@@ -105,6 +108,18 @@ impl fmt::Display for bindings::Response {
 impl fmt::Display for bindings::Reset {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Reset: seed={}", Bytes32::new(self.seed.0))
+    }
+}
+
+impl fmt::Display for bindings::Callback {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "Callback: seed={}, randomness={}, contract_id={}",
+            Bytes32::new(self.seed.0),
+            randomness_to_bytes64(self.randomness),
+            ContractId::from(self.client),
+        )
     }
 }
 

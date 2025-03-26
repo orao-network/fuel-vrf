@@ -24,10 +24,10 @@ import type { Option, Enum, Vec } from "./common";
 
 export enum AccessErrorInput { NotOwner = 'NotOwner' };
 export enum AccessErrorOutput { NotOwner = 'NotOwner' };
-export enum ErrorInput { ContractNotConfigured = 'ContractNotConfigured', AssetNotConfigured = 'AssetNotConfigured', NotAuthorized = 'NotAuthorized', RemainingAssets = 'RemainingAssets', NonZeroFee = 'NonZeroFee', ZeroAuthority = 'ZeroAuthority', ZeroFee = 'ZeroFee', NoFeePaid = 'NoFeePaid', WrongFeePaid = 'WrongFeePaid', SeedInUse = 'SeedInUse', NoAmountSpecified = 'NoAmountSpecified', NotEnoughFunds = 'NotEnoughFunds', UnknownRequest = 'UnknownRequest', InvalidResponse = 'InvalidResponse', Responded = 'Responded', Fulfilled = 'Fulfilled' };
-export enum ErrorOutput { ContractNotConfigured = 'ContractNotConfigured', AssetNotConfigured = 'AssetNotConfigured', NotAuthorized = 'NotAuthorized', RemainingAssets = 'RemainingAssets', NonZeroFee = 'NonZeroFee', ZeroAuthority = 'ZeroAuthority', ZeroFee = 'ZeroFee', NoFeePaid = 'NoFeePaid', WrongFeePaid = 'WrongFeePaid', SeedInUse = 'SeedInUse', NoAmountSpecified = 'NoAmountSpecified', NotEnoughFunds = 'NotEnoughFunds', UnknownRequest = 'UnknownRequest', InvalidResponse = 'InvalidResponse', Responded = 'Responded', Fulfilled = 'Fulfilled' };
-export type EventInput = Enum<{ Fulfill: FulfillInput, Response: ResponseInput, Request: RequestInput, Reset: ResetInput }>;
-export type EventOutput = Enum<{ Fulfill: FulfillOutput, Response: ResponseOutput, Request: RequestOutput, Reset: ResetOutput }>;
+export enum ErrorInput { ContractNotConfigured = 'ContractNotConfigured', AssetNotConfigured = 'AssetNotConfigured', NotAuthorized = 'NotAuthorized', RemainingAssets = 'RemainingAssets', NonZeroFee = 'NonZeroFee', ZeroAuthority = 'ZeroAuthority', ZeroFee = 'ZeroFee', NoFeePaid = 'NoFeePaid', WrongFeePaid = 'WrongFeePaid', SeedInUse = 'SeedInUse', NoAmountSpecified = 'NoAmountSpecified', NotEnoughFunds = 'NotEnoughFunds', UnknownRequest = 'UnknownRequest', InvalidResponse = 'InvalidResponse', Responded = 'Responded', Fulfilled = 'Fulfilled', UnFulfilled = 'UnFulfilled' };
+export enum ErrorOutput { ContractNotConfigured = 'ContractNotConfigured', AssetNotConfigured = 'AssetNotConfigured', NotAuthorized = 'NotAuthorized', RemainingAssets = 'RemainingAssets', NonZeroFee = 'NonZeroFee', ZeroAuthority = 'ZeroAuthority', ZeroFee = 'ZeroFee', NoFeePaid = 'NoFeePaid', WrongFeePaid = 'WrongFeePaid', SeedInUse = 'SeedInUse', NoAmountSpecified = 'NoAmountSpecified', NotEnoughFunds = 'NotEnoughFunds', UnknownRequest = 'UnknownRequest', InvalidResponse = 'InvalidResponse', Responded = 'Responded', Fulfilled = 'Fulfilled', UnFulfilled = 'UnFulfilled' };
+export type EventInput = Enum<{ Fulfill: FulfillInput, Response: ResponseInput, Request: RequestInput, Reset: ResetInput, Callback: CallbackInput }>;
+export type EventOutput = Enum<{ Fulfill: FulfillOutput, Response: ResponseOutput, Request: RequestOutput, Reset: ResetOutput, Callback: CallbackOutput }>;
 export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export enum InitializationErrorInput { CannotReinitialized = 'CannotReinitialized' };
@@ -41,6 +41,8 @@ export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
 export type AssetIdInput = { bits: string };
 export type AssetIdOutput = AssetIdInput;
+export type CallbackInput = { seed: string, randomness: string, client: ContractIdInput };
+export type CallbackOutput = { seed: string, randomness: string, client: ContractIdOutput };
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 export type FulfillInput = { seed: string, randomness: string };
@@ -122,22 +124,22 @@ const abi = {
     {
       "type": "struct std::address::Address",
       "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308",
-      "metadataTypeId": 16
+      "metadataTypeId": 17
     },
     {
       "type": "struct std::asset_id::AssetId",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "metadataTypeId": 17
+      "metadataTypeId": 18
     },
     {
       "type": "struct std::b512::B512",
       "concreteTypeId": "745e252e80bec590efc3999ae943f07ccea4d5b45b00bb6575499b64abdd3322",
-      "metadataTypeId": 18
+      "metadataTypeId": 19
     },
     {
       "type": "struct std::vec::Vec<struct std::address::Address>",
       "concreteTypeId": "fc4d04749f58f5bf7fd11c9ed9065b555ad48afcaa1172aaefa952a3a7712160",
-      "metadataTypeId": 21,
+      "metadataTypeId": 22,
       "typeArguments": [
         "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308"
       ]
@@ -145,7 +147,7 @@ const abi = {
     {
       "type": "struct std::vec::Vec<struct vrf_abi::randomness::Randomness>",
       "concreteTypeId": "1520cb2bcbf5d314578cc80b3588e131bcec5bd26dd7706bcdb456b4d8cf2734",
-      "metadataTypeId": 21,
+      "metadataTypeId": 22,
       "typeArguments": [
         "df4614f52fecb7117de6d08754213cd97e8a055ebff3283eb3632299f2ee3dd3"
       ]
@@ -153,17 +155,17 @@ const abi = {
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
       "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
-      "metadataTypeId": 22
+      "metadataTypeId": 23
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
       "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
-      "metadataTypeId": 23
+      "metadataTypeId": 24
     },
     {
       "type": "struct vrf_abi::randomness::Randomness",
       "concreteTypeId": "df4614f52fecb7117de6d08754213cd97e8a055ebff3283eb3632299f2ee3dd3",
-      "metadataTypeId": 26
+      "metadataTypeId": 27
     },
     {
       "type": "u64",
@@ -187,7 +189,7 @@ const abi = {
       "components": [
         {
           "name": "__array_element",
-          "typeId": 16
+          "typeId": 17
         }
       ]
     },
@@ -258,6 +260,10 @@ const abi = {
         {
           "name": "Fulfilled",
           "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "UnFulfilled",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
         }
       ]
     },
@@ -267,19 +273,23 @@ const abi = {
       "components": [
         {
           "name": "Fulfill",
-          "typeId": 12
-        },
-        {
-          "name": "Response",
-          "typeId": 15
-        },
-        {
-          "name": "Request",
           "typeId": 13
         },
         {
-          "name": "Reset",
+          "name": "Response",
+          "typeId": 16
+        },
+        {
+          "name": "Request",
           "typeId": 14
+        },
+        {
+          "name": "Reset",
+          "typeId": 15
+        },
+        {
+          "name": "Callback",
+          "typeId": 12
         }
       ]
     },
@@ -317,11 +327,11 @@ const abi = {
       "components": [
         {
           "name": "Address",
-          "typeId": 16
+          "typeId": 17
         },
         {
           "name": "ContractId",
-          "typeId": 19
+          "typeId": 20
         }
       ]
     },
@@ -358,11 +368,11 @@ const abi = {
       "components": [
         {
           "name": "Unfulfilled",
-          "typeId": 27
+          "typeId": 28
         },
         {
           "name": "Fulfilled",
-          "typeId": 24
+          "typeId": 25
         }
       ]
     },
@@ -375,7 +385,7 @@ const abi = {
       "metadataTypeId": 11
     },
     {
-      "type": "struct event::Fulfill",
+      "type": "struct event::Callback",
       "metadataTypeId": 12,
       "components": [
         {
@@ -384,13 +394,31 @@ const abi = {
         },
         {
           "name": "randomness",
-          "typeId": 18
+          "typeId": 19
+        },
+        {
+          "name": "client",
+          "typeId": 20
+        }
+      ]
+    },
+    {
+      "type": "struct event::Fulfill",
+      "metadataTypeId": 13,
+      "components": [
+        {
+          "name": "seed",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "randomness",
+          "typeId": 19
         }
       ]
     },
     {
       "type": "struct event::Request",
-      "metadataTypeId": 13,
+      "metadataTypeId": 14,
       "components": [
         {
           "name": "seed",
@@ -408,7 +436,7 @@ const abi = {
     },
     {
       "type": "struct event::Reset",
-      "metadataTypeId": 14,
+      "metadataTypeId": 15,
       "components": [
         {
           "name": "seed",
@@ -418,7 +446,7 @@ const abi = {
     },
     {
       "type": "struct event::Response",
-      "metadataTypeId": 15,
+      "metadataTypeId": 16,
       "components": [
         {
           "name": "seed",
@@ -426,26 +454,16 @@ const abi = {
         },
         {
           "name": "authority",
-          "typeId": 16
+          "typeId": 17
         },
         {
           "name": "randomness",
-          "typeId": 18
+          "typeId": 19
         }
       ]
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 16,
-      "components": [
-        {
-          "name": "bits",
-          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        }
-      ]
-    },
-    {
-      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 17,
       "components": [
         {
@@ -455,8 +473,18 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::b512::B512",
+      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 18,
+      "components": [
+        {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct std::b512::B512",
+      "metadataTypeId": 19,
       "components": [
         {
           "name": "bits",
@@ -466,7 +494,7 @@ const abi = {
     },
     {
       "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 19,
+      "metadataTypeId": 20,
       "components": [
         {
           "name": "bits",
@@ -476,7 +504,7 @@ const abi = {
     },
     {
       "type": "struct std::vec::RawVec",
-      "metadataTypeId": 20,
+      "metadataTypeId": 21,
       "components": [
         {
           "name": "ptr",
@@ -493,11 +521,11 @@ const abi = {
     },
     {
       "type": "struct std::vec::Vec",
-      "metadataTypeId": 21,
+      "metadataTypeId": 22,
       "components": [
         {
           "name": "buf",
-          "typeId": 20,
+          "typeId": 21,
           "typeArguments": [
             {
               "name": "",
@@ -516,7 +544,7 @@ const abi = {
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
-      "metadataTypeId": 22,
+      "metadataTypeId": 23,
       "components": [
         {
           "name": "new_owner",
@@ -526,7 +554,7 @@ const abi = {
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
-      "metadataTypeId": 23,
+      "metadataTypeId": 24,
       "components": [
         {
           "name": "new_owner",
@@ -540,21 +568,21 @@ const abi = {
     },
     {
       "type": "struct vrf_abi::randomness::Fulfilled",
-      "metadataTypeId": 24,
+      "metadataTypeId": 25,
       "components": [
         {
           "name": "randomness",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "keys",
-          "typeId": 25
+          "typeId": 26
         }
       ]
     },
     {
       "type": "struct vrf_abi::randomness::FulfillersKeys",
-      "metadataTypeId": 25,
+      "metadataTypeId": 26,
       "components": [
         {
           "name": "keys",
@@ -564,7 +592,7 @@ const abi = {
     },
     {
       "type": "struct vrf_abi::randomness::Randomness",
-      "metadataTypeId": 26,
+      "metadataTypeId": 27,
       "components": [
         {
           "name": "sender",
@@ -586,15 +614,15 @@ const abi = {
     },
     {
       "type": "struct vrf_abi::randomness::Unfulfilled",
-      "metadataTypeId": 27,
+      "metadataTypeId": 28,
       "components": [
         {
           "name": "randomness",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "keys",
-          "typeId": 25
+          "typeId": 26
         }
       ]
     }
@@ -652,6 +680,25 @@ const abi = {
         }
       ],
       "name": "configure_asset",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "seed",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "name": "execute_callback",
       "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
       "attributes": [
         {
@@ -916,6 +963,7 @@ export class VrfImplInterface extends Interface {
     owner: FunctionFragment;
     configure: FunctionFragment;
     configure_asset: FunctionFragment;
+    execute_callback: FunctionFragment;
     fulfill: FunctionFragment;
     get_asset: FunctionFragment;
     get_balance: FunctionFragment;
@@ -939,6 +987,7 @@ export class VrfImpl extends __Contract {
     owner: InvokeFunction<[], StateOutput>;
     configure: InvokeFunction<[authority: IdentityInput, fee: BigNumberish, fulfillment_authorities: Vec<AddressInput>], void>;
     configure_asset: InvokeFunction<[asset: AssetIdInput, fee: BigNumberish], void>;
+    execute_callback: InvokeFunction<[seed: string], void>;
     fulfill: InvokeFunction<[seed: string, signature: string], void>;
     get_asset: InvokeFunction<[], AssetIdOutput>;
     get_balance: InvokeFunction<[asset: AssetIdInput], BN>;
